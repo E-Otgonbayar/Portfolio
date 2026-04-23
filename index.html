@@ -1,1202 +1,752 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="mn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Otgonbayar Enkhbold | System Engineer</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        mono: ['JetBrains Mono', 'monospace'],
-                        sans: ['DM Sans', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* ===== Theme Variables ===== */
-        :root {
-            --bg: #f2f5f3;
-            --bg-alt: #e8ede9;
-            --card: #ffffff;
-            --card-hover: #f6f9f7;
-            --border: #cdd8d2;
-            --text: #1a2420;
-            --text-sec: #3d5248;
-            --text-muted: #6b8078;
-            --accent: #00b248;
-            --accent-hover: #009e3f;
-            --accent-soft: rgba(0,178,72,0.07);
-            --accent-glow: rgba(0,178,72,0.15);
-            --accent-text: #fff;
-            --terminal-bg: #0a0d0b;
-            --terminal-border: #1a2b22;
-            --terminal-prompt: #00e676;
-            --terminal-text: #b0c0b6;
-            --terminal-output: #e4ebe7;
-            --shadow: 0 4px 24px rgba(0,0,0,0.06);
-            --shadow-lg: 0 12px 48px rgba(0,0,0,0.08);
-        }
-        .dark {
-            --bg: #090c0a;
-            --bg-alt: #0f1411;
-            --card: #141a17;
-            --card-hover: #1a221e;
-            --border: #1e2e27;
-            --text: #e4ebe7;
-            --text-sec: #a3b5ab;
-            --text-muted: #5e7569;
-            --accent: #00e676;
-            --accent-hover: #69f0ae;
-            --accent-soft: rgba(0,230,118,0.06);
-            --accent-glow: rgba(0,230,118,0.12);
-            --accent-text: #090c0a;
-            --terminal-bg: #060908;
-            --terminal-border: #152018;
-            --terminal-prompt: #00e676;
-            --terminal-text: #7a9488;
-            --terminal-output: #c8d8ce;
-            --shadow: 0 4px 24px rgba(0,0,0,0.3);
-            --shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FEAF — Иж Бүрэн Судалгаа</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #050505; color: #e5e5e5; overflow: hidden; height: 100vh; }
+  ::selection { background: #00ffc4; color: #000; }
+  ::-webkit-scrollbar { width: 0; }
 
-        /* ===== Base ===== */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            transition: background-color 0.35s ease, color 0.35s ease;
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 3rem 4rem;
+    opacity: 0; pointer-events: none;
+    /* no CSS transition here — JS handles all transitions via inline styles */
+  }
 
-        /* ===== Scrollbar ===== */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-alt); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+  .slide-number {
+    position: fixed; bottom: 2rem; right: 3rem; z-index: 100;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+    color: #a3a3a3; font-variant-numeric: tabular-nums;
+  }
 
-        /* ===== Selection ===== */
-        ::selection { background: var(--accent); color: var(--accent-text); }
+  .nav-btn {
+    position: fixed; top: 50%; z-index: 100;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(23,23,23,0.6); border: 1px solid rgba(255,255,255,0.08);
+    color: #a3a3a3; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.3s; backdrop-filter: blur(12px);
+  }
+  .nav-btn:hover { background: #00ffc4; color: #000; border-color: #00ffc4; box-shadow: 0 0 20px rgba(0,255,196,0.25); }
+  .nav-btn.prev { left: 1.5rem; transform: translateY(-50%); }
+  .nav-btn.next { right: 1.5rem; transform: translateY(-50%); }
+  .nav-btn.disabled { opacity: 0.25 !important; pointer-events: none !important; }
 
-        /* ===== Background Grid ===== */
-        .bg-grid {
-            background-image:
-                radial-gradient(circle at 1px 1px, var(--border) 0.5px, transparent 0);
-            background-size: 32px 32px;
-        }
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 2px; z-index: 200;
+    background: linear-gradient(to right, #047857, #00ffc4);
+    transition: width 0.4s ease;
+  }
 
-        /* ===== Scroll Progress ===== */
-        .scroll-progress {
-            position: fixed; top: 0; left: 0; height: 2px;
-            background: var(--accent); z-index: 9999;
-            transition: width 0.05s linear;
-            box-shadow: 0 0 8px var(--accent-glow);
-        }
+  .tag {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #00ffc4; background: rgba(0,255,196,0.08); border: 1px solid rgba(0,255,196,0.15);
+    padding: 0.35rem 0.9rem; border-radius: 9999px;
+  }
 
-        /* ===== Navbar Glass ===== */
-        .nav-glass {
-            background: color-mix(in srgb, var(--bg) 80%, transparent);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
-            transition: background 0.35s, border-color 0.35s;
-        }
+  .card {
+    background: rgba(23,23,23,0.5); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 1rem; padding: 1.5rem; transition: all 0.3s;
+  }
+  .card:hover { border-color: rgba(0,255,196,0.15); box-shadow: 0 0 30px rgba(0,255,196,0.05); }
 
-        /* ===== Terminal ===== */
-        .terminal {
-            background: var(--terminal-bg);
-            border: 1px solid var(--terminal-border);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 0 60px var(--accent-glow);
-        }
-        .terminal-bar {
-            background: var(--terminal-border);
-            padding: 10px 14px;
-            display: flex; gap: 7px; align-items: center;
-        }
-        .terminal-dot { width: 11px; height: 11px; border-radius: 50%; }
-        .terminal-body {
-            padding: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            line-height: 1.75;
-            min-height: 220px;
-            color: var(--terminal-text);
-        }
-        .terminal-body .prompt { color: var(--terminal-prompt); }
-        .terminal-body .cmd { color: var(--terminal-text); }
-        .terminal-body .output { color: var(--terminal-output); }
-        .cursor-blink {
-            display: inline-block; width: 8px; height: 16px;
-            background: var(--terminal-prompt);
-            animation: blink 1s step-end infinite;
-            vertical-align: text-bottom; margin-left: 2px;
-        }
-        /* Scanline overlay */
-        .terminal-scanlines {
-            position: absolute; inset: 0; pointer-events: none;
-            background: repeating-linear-gradient(
-                0deg, transparent, transparent 2px,
-                rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px
-            );
-            border-radius: 10px;
-        }
+  .glow-orb {
+    position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none;
+    animation: pulse-glow 8s ease-in-out infinite;
+  }
 
-        /* ===== Keyframes ===== */
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(28px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes float {
-            0%,100% { transform: translateY(0px); }
-            50% { transform: translateY(-12px); }
-        }
-        @keyframes pulseRing {
-            0% { transform: scale(0.9); opacity: 0.6; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOutRight {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.06; transform: scale(1); }
+    50% { opacity: 0.12; transform: scale(1.15); }
+  }
 
-        /* ===== Reveal on Scroll ===== */
-        .reveal {
-            opacity: 0; transform: translateY(30px);
-            transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
-        }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
-        .reveal-delay-1 { transition-delay: 0.1s; }
-        .reveal-delay-2 { transition-delay: 0.2s; }
-        .reveal-delay-3 { transition-delay: 0.3s; }
-        .reveal-delay-4 { transition-delay: 0.4s; }
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-        /* ===== Accent Glow ===== */
-        .accent-glow {
-            position: absolute; border-radius: 50%; pointer-events: none;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-            filter: blur(50px);
-        }
+  .slide.visible .anim-1 { animation: slide-up 0.6s 0.1s both; }
+  .slide.visible .anim-2 { animation: slide-up 0.6s 0.2s both; }
+  .slide.visible .anim-3 { animation: slide-up 0.6s 0.3s both; }
+  .slide.visible .anim-4 { animation: slide-up 0.6s 0.4s both; }
+  .slide.visible .anim-5 { animation: slide-up 0.6s 0.5s both; }
+  .slide.visible .anim-6 { animation: slide-up 0.6s 0.6s both; }
+  .slide.visible .anim-7 { animation: slide-up 0.6s 0.7s both; }
 
-        /* ===== Card Base ===== */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            transition: background 0.3s, border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-            box-shadow: var(--shadow);
-        }
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--accent);
-        }
+  .flow-arrow { color: #047857; font-size: 1.2rem; }
 
-        /* ===== Skill Card ===== */
-        .skill-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 16px 18px;
-            display: flex; align-items: center; gap: 14px;
-            transition: all 0.3s ease;
-            cursor: default;
-        }
-        .skill-card:hover {
-            border-color: var(--accent);
-            background: var(--accent-soft);
-            transform: translateX(4px);
-        }
-        .skill-icon {
-            width: 38px; height: 38px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--accent-soft);
-            color: var(--accent);
-            font-size: 16px; flex-shrink: 0;
-            transition: background 0.3s, color 0.3s;
-        }
-        .skill-card:hover .skill-icon {
-            background: var(--accent);
-            color: var(--accent-text);
-        }
+  .mini-toc {
+    position: fixed; left: 1.5rem; top: 50%; transform: translateY(-50%);
+    z-index: 90; display: flex; flex-direction: column; gap: 6px;
+  }
+  .mini-toc-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #333;
+    transition: all 0.3s; cursor: pointer;
+  }
+  .mini-toc-dot.active { background: #00ffc4; box-shadow: 0 0 8px rgba(0,255,196,0.4); transform: scale(1.4); }
+  .mini-toc-dot:hover:not(.active) { background: #a3a3a3; }
 
-        /* ===== Project Card ===== */
-        .project-card {
-            position: relative; overflow: hidden;
-        }
-        .project-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--accent), transparent);
-            opacity: 0; transition: opacity 0.3s;
-        }
-        .project-card:hover::before { opacity: 1; }
-
-        /* ===== Timeline ===== */
-        .timeline-line {
-            position: absolute; left: 15px; top: 0; bottom: 0; width: 2px;
-            background: linear-gradient(to bottom, var(--accent), var(--border));
-        }
-        .timeline-dot {
-            position: absolute; left: 8px; top: 6px;
-            width: 16px; height: 16px; border-radius: 50%;
-            background: var(--bg);
-            border: 2px solid var(--accent);
-            z-index: 2; transition: background 0.3s;
-        }
-        .timeline-item:hover .timeline-dot {
-            background: var(--accent);
-        }
-
-        /* ===== Tabs ===== */
-        .tab-btn {
-            padding: 10px 24px; border-radius: 8px; font-weight: 600;
-            font-size: 14px; cursor: pointer; border: 1px solid transparent;
-            background: transparent; color: var(--text-muted);
-            transition: all 0.25s ease;
-            font-family: 'DM Sans', sans-serif;
-        }
-        .tab-btn:hover { color: var(--text); background: var(--accent-soft); }
-        .tab-btn.active {
-            background: var(--accent); color: var(--accent-text);
-            border-color: var(--accent);
-        }
-
-        /* ===== Form Input ===== */
-        .form-input {
-            width: 100%; padding: 14px 16px; border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--card); color: var(--text);
-            font-family: 'DM Sans', sans-serif; font-size: 15px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            outline: none;
-        }
-        .form-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-soft);
-        }
-        .form-input::placeholder { color: var(--text-muted); }
-
-        /* ===== Button ===== */
-        .btn-primary {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 12px 28px; border-radius: 10px; font-weight: 600;
-            font-size: 15px; border: none; cursor: pointer;
-            background: var(--accent); color: var(--accent-text);
-            transition: all 0.25s ease; font-family: 'DM Sans', sans-serif;
-        }
-        .btn-primary:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--accent-glow);
-        }
-        .btn-outline {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 12px 28px; border-radius: 10px; font-weight: 600;
-            font-size: 15px; cursor: pointer;
-            background: transparent; color: var(--accent);
-            border: 1.5px solid var(--accent);
-            transition: all 0.25s ease; font-family: 'DM Sans', sans-serif;
-        }
-        .btn-outline:hover {
-            background: var(--accent-soft);
-            transform: translateY(-2px);
-        }
-
-        /* ===== Toast ===== */
-        .toast-enter { animation: slideInRight 0.35s ease forwards; }
-        .toast-exit { animation: slideOutRight 0.3s ease forwards; }
-
-        /* ===== Section Title ===== */
-        .section-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px; font-weight: 500;
-            color: var(--accent); letter-spacing: 0.5px;
-            text-transform: uppercase; margin-bottom: 8px;
-        }
-        .section-title {
-            font-size: clamp(28px, 4vw, 40px); font-weight: 700;
-            color: var(--text); line-height: 1.2;
-        }
-
-        /* ===== Mobile Menu ===== */
-        .mobile-menu-overlay {
-            position: fixed; inset: 0; z-index: 90;
-            background: color-mix(in srgb, var(--bg) 95%, transparent);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 32px;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .mobile-menu-overlay.open { opacity: 1; pointer-events: all; }
-        .mobile-menu-overlay a {
-            font-size: 24px; font-weight: 600; color: var(--text);
-            text-decoration: none; transition: color 0.2s;
-        }
-        .mobile-menu-overlay a:hover { color: var(--accent); }
-
-        /* ===== Scroll to Top ===== */
-        .scroll-top-btn {
-            position: fixed; bottom: 28px; right: 28px; z-index: 50;
-            width: 44px; height: 44px; border-radius: 12px;
-            background: var(--card); border: 1px solid var(--border);
-            color: var(--accent); font-size: 18px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s ease; opacity: 0; transform: translateY(10px);
-            pointer-events: none; box-shadow: var(--shadow);
-        }
-        .scroll-top-btn.visible {
-            opacity: 1; transform: translateY(0); pointer-events: all;
-        }
-        .scroll-top-btn:hover {
-            background: var(--accent); color: var(--accent-text);
-            border-color: var(--accent);
-        }
-
-        /* ===== Tag pill ===== */
-        .tag {
-            display: inline-block; padding: 4px 12px; border-radius: 6px;
-            font-size: 12px; font-weight: 500; font-family: 'JetBrains Mono', monospace;
-            background: var(--accent-soft); color: var(--accent);
-            border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
-        }
-
-        /* ===== Highlight Card ===== */
-        .highlight-card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 24px; text-align: center;
-            transition: all 0.3s ease;
-        }
-        .highlight-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 30px var(--accent-glow);
-        }
-        .highlight-icon {
-            width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 14px;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--accent-soft); color: var(--accent); font-size: 20px;
-        }
-
-        /* ===== Reduced motion ===== */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-            }
-            .reveal { opacity: 1; transform: none; }
-        }
-    </style>
+  @media (max-width: 768px) {
+    .slide { padding: 1.5rem; }
+    .mini-toc { display: none; }
+    .nav-btn.prev { left: 0.5rem; }
+    .nav-btn.next { right: 0.5rem; }
+  }
+</style>
 </head>
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef, useCallback, createContext, useContext } = React;
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
 
-        /* ===================================================
-           Data
-        =================================================== */
-        const NAV_LINKS = [
-            { id: 'about', label: 'About' },
-            { id: 'skills', label: 'Skills' },
-            { id: 'projects', label: 'Projects' },
-            { id: 'experience', label: 'Experience' },
-            { id: 'contact', label: 'Contact' },
-        ];
+<div class="mini-toc" id="miniToc"></div>
 
-        const TERMINAL_LINES = [
-            { type: 'cmd', text: '$ whoami' },
-            { type: 'out', text: 'otgonbayar@enkhbold' },
-            { type: 'cmd', text: '$ cat /etc/role' },
-            { type: 'out', text: 'Information Systems Student | Aspiring System Engineer' },
-            { type: 'cmd', text: '$ cat /etc/location' },
-            { type: 'out', text: 'Ulaanbaatar, Mongolia' },
-            { type: 'cmd', text: '$ echo $STATUS' },
-            { type: 'out', text: 'Building infrastructure. Deploying systems. Learning daily.' },
-        ];
+<button class="nav-btn prev disabled" id="prevBtn" onclick="navigate(-1)">
+  <i data-lucide="chevron-left" style="width:18px;height:18px"></i>
+</button>
+<button class="nav-btn next" id="nextBtn" onclick="navigate(1)">
+  <i data-lucide="chevron-right" style="width:18px;height:18px"></i>
+</button>
 
-        const HIGHLIGHTS = [
-            { icon: 'fa-graduation-cap', title: '3rd Year Student', desc: 'Information Systems, NUM' },
-            { icon: 'fa-cloud', title: 'Cloud Infrastructure', desc: 'VM deployment & hosting' },
-            { icon: 'fa-server', title: 'Systems & DevOps', desc: 'Nginx, Docker, Linux' },
-            { icon: 'fa-code', title: 'Full-Stack Dev', desc: 'React, Node.js, MongoDB' },
-        ];
+<div class="slide-number" id="slideNumber">01 / 24</div>
 
-        const DEV_SKILLS = [
-            { name: 'HTML', icon: 'fa-brands fa-html5' },
-            { name: 'CSS', icon: 'fa-brands fa-css3-alt' },
-            { name: 'JavaScript', icon: 'fa-brands fa-js' },
-            { name: 'React', icon: 'fa-brands fa-react' },
-            { name: 'Node.js', icon: 'fa-brands fa-node-js' },
-            { name: 'Express.js', icon: 'fa-solid fa-bolt' },
-            { name: 'MongoDB', icon: 'fa-solid fa-database' },
-            { name: 'C++', icon: 'fa-solid fa-microchip' },
-            { name: 'C#', icon: 'fa-solid fa-code' },
-            { name: 'Python', icon: 'fa-brands fa-python' },
-            { name: 'Data Structures', icon: 'fa-solid fa-sitemap' },
-        ];
+<!-- ======================== SLIDES ======================== -->
 
-        const DEVOPS_SKILLS = [
-            { name: 'Linux', icon: 'fa-brands fa-linux', desc: 'User management, permissions, SSH' },
-            { name: 'Nginx', icon: 'fa-solid fa-globe', desc: 'Web server configuration & reverse proxy' },
-            { name: 'Docker', icon: 'fa-brands fa-docker', desc: 'Containerization basics' },
-            { name: 'VM Deployment', icon: 'fa-solid fa-cloud', desc: 'Cloud platform instance management' },
-            { name: 'Networking', icon: 'fa-solid fa-network-wired', desc: 'TCP/IP, DNS, firewall rules' },
-            { name: 'Server Security', icon: 'fa-solid fa-shield-halved', desc: 'SSH keys, root disable, hardening' },
-            { name: 'CI/CD', icon: 'fa-solid fa-arrows-spin', desc: 'Deployment pipeline concepts' },
-            { name: 'Monitoring', icon: 'fa-solid fa-chart-line', desc: 'Service health & troubleshooting' },
-            { name: 'Kubernetes', icon: 'fa-solid fa-dharmachakra', desc: 'Basic orchestration understanding at cloud native associate level' },
-        ];
+<!-- SLIDE 0: Title -->
+<div class="slide" data-index="0">
+  <div class="glow-orb" style="width:600px;height:600px;background:#00ffc4;top:-200px;right:-100px;"></div>
+  <div class="glow-orb" style="width:400px;height:400px;background:#047857;bottom:-150px;left:-100px;animation-delay:3s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-6"><span class="tag"><i data-lucide="landmark" style="width:12px;height:12px"></i> Академик Шинжилгээ</span></div>
+    <h1 class="anim-2 text-5xl md:text-7xl font-semibold tracking-tight leading-[1.05] mb-6">Federal Enterprise<br>Architecture<br>Framework</h1>
+    <p class="anim-3 text-lg md:text-xl text-neutral-400 leading-relaxed max-w-2xl mb-8">АНУ-ын холбооны засгийн газрын IT, бизнес, өгөгдлийн нэгдсэн архитектурын хүрээ — түүх, бүтэц, хэрэгжилт, шүүмжлэл</p>
+    <div class="anim-4 flex flex-wrap items-center gap-6 text-sm text-neutral-500">
+      <span class="flex items-center gap-2"><i data-lucide="user" style="width:14px;height:14px"></i> EA & IT Засаглалын Судлаач</span>
+      <span class="flex items-center gap-2"><i data-lucide="calendar" style="width:14px;height:14px"></i> 2026 оны 4-р сар</span>
+      <span class="flex items-center gap-2"><i data-lucide="file-text" style="width:14px;height:14px"></i> 24 слайд</span>
+    </div>
+    <div class="anim-5 mt-12 flex items-center gap-2 text-neutral-600 text-xs tracking-wider uppercase">
+      <span>Arrow эсвэл Click</span><i data-lucide="arrow-right" style="width:14px;height:14px"></i><span>дараах слайд</span>
+    </div>
+  </div>
+</div>
 
-        const PROJECTS = [
-            {
-                title: 'Cloud-Deployed Portfolio System',
-                stack: ['Nginx', 'Linux VM', 'HTTPS', 'SSH'],
-                desc: 'Deployed a personal portfolio on a cloud VM, configured Nginx as a web server, implemented HTTPS via certificate setup, and secured the server using SSH key authentication and strict firewall rules on ports 22, 80, and 443.',
-                points: ['Public IP hosting with Nginx', 'HTTPS certificate configuration', 'SSH key-based authentication', 'Firewall rules (22, 80, 443)'],
-            },
-            {
-                title: 'Photo Sharing Web Application',
-                stack: ['React', 'Node.js', 'MongoDB', 'Express.js'],
-                desc: 'Migrated a photo sharing platform to MongoDB using Mongoose ODM. Built RESTful APIs for user management and photo data, implementing authentication, commenting, and dynamic data rendering across the full stack.',
-                points: ['User authentication system', 'Comment & interaction features', 'RESTful API with Mongoose', 'Dynamic client-side rendering'],
-            },
-            {
-                title: 'Data Structures Implementation',
-                stack: ['C++', 'BST', 'Heap', 'Red-Black Tree'],
-                desc: 'Implemented core data structures from scratch in C++ with complete functionality including insertion, deletion, traversal, ranking queries, and self-balancing operations with rigorous testing.',
-                points: ['Binary Search Tree operations', 'Min/Max Heap implementation', 'Red-Black Tree balancing', 'Comprehensive test coverage'],
-            },
-        ];
+<!-- SLIDE 1: Definition -->
+<div class="slide" data-index="1">
+  <div class="glow-orb" style="width:500px;height:500px;background:#047857;top:0;left:-150px;"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">01 — Тодорхойлолт</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">FEAF гэж <em style="font-family:'Playfair Display';color:#00ffc4">юу</em> вэ?</h2>
+    <p class="anim-3 text-lg text-neutral-300 leading-relaxed mb-10 max-w-3xl">АНУ-ын холбооны засгийн газрын байгууллагуудын IT, бизнес, өгөгдөл, үйлчилгээ, техникийн дэд бүтцийг нэгдсэн стратегийн үзэл баримтлалд суурилан дүрслэх, төлөвлөх, удирдахад зориулсан <strong class="text-white">засгийн газрын хэмжээний EA загварчлалын хүрээ</strong>.</p>
+    <div class="anim-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="card flex items-start gap-3"><i data-lucide="languages" style="width:20px;height:20px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i><div><p class="text-sm font-medium text-white mb-1">Нэгдсэн хэл</p><p class="text-xs text-neutral-400">Засгийн газрын "хэрхэн ажилладаг" тухай нийтлэг ойлголт</p></div></div>
+      <div class="card flex items-start gap-3"><i data-lucide="link" style="width:20px;height:20px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i><div><p class="text-sm font-medium text-white mb-1">Стратеги уялдал</p><p class="text-xs text-neutral-400">IT болон бизнесийн шийдвэрийг зорилготой холбох</p></div></div>
+      <div class="card flex items-start gap-3"><i data-lucide="network" style="width:20px;height:20px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i><div><p class="text-sm font-medium text-white mb-1">Interoperability</p><p class="text-xs text-neutral-400">Яам, агентлагуудын хооронд харилцан ажиллах чадвар</p></div></div>
+      <div class="card flex items-start gap-3"><i data-lucide="trending-up" style="width:20px;height:20px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i><div><p class="text-sm font-medium text-white mb-1">Зардал-үр ашиг</p><p class="text-xs text-neutral-400">Хөрөнгө оруулалтын шинжилгээний үндэс</p></div></div>
+    </div>
+  </div>
+</div>
 
-        const EXPERIENCES = [
-            {
-                title: 'Cloud VM Setup & Server Configuration',
-                desc: 'Set up and managed virtual machines on cloud platforms. Configured Nginx web servers, deployed portfolio projects, and established secure remote access protocols.',
-                tags: ['Linux', 'Nginx', 'SSH', 'Cloud Platforms'],
-            },
-            {
-                title: 'Server Security Hardening',
-                desc: 'Implemented comprehensive security measures including disabling root login, configuring SSH key-only authentication, and defining firewall rules to restrict access to essential ports only.',
-                tags: ['SSH Keys', 'Firewall', 'Security', 'Linux Hardening'],
-            },
-            {
-                title: 'Containerization & Infrastructure',
-                desc: 'Gained practical experience with Docker containerization, explored CI/CD deployment pipeline concepts, and worked with OpenStack environments for instance management.',
-                tags: ['Docker', 'CI/CD', 'OpenStack', 'Monitoring'],
-            },
-            {
-                title: 'Full-Stack Application Development',
-                desc: 'Built full-stack web applications using React, Node.js, Express.js, and MongoDB. Developed algorithmic solutions in C++ implementing advanced data structures.',
-                tags: ['React', 'Node.js', 'MongoDB', 'C++'],
-            },
-            {
-                title: 'OpenStack-Based Cloud Infrastructure',
-                desc: 'Provisioned and managed cloud infrastructure using OpenStack, including VM lifecycle management, virtual networking configuration, and storage allocation. Gained hands-on experience with compute (Nova), networking (Neutron), and block storage (Cinder) services.',
-                tags: ['OpenStack', 'Cloud Computing', 'Virtualization', 'Linux'],
-            },
-            {
-                title: 'Ceph-Based Storage Reliability & Monitoring',
-                desc: 'Maintained high-availability Ceph storage clusters by monitoring cluster health, managing OSD nodes, and troubleshooting performance bottlenecks. Implemented monitoring practices to ensure data durability, fault tolerance, and system stability in a distributed environment.',
-                tags: ['Ceph', 'High Availability', 'Fault Tolerance', 'Monitoring', 'Linux'],
-            },
-            {
-                title: 'Infrastructure Monitoring & Visualization',
-                desc: 'Designed and implemented a monitoring stack using Prometheus and Grafana to collect, visualize, and analyze infrastructure metrics. Enabled proactive issue detection and performance tuning through real-time dashboards and system-level insights.',
-                tags: ['Prometheus', 'Grafana', 'Observability', 'Infrastructure', 'Monitoring'],
-            },
-            {
-                title: 'Kubernetes & Cloud Native Fundamentals (Associate Level)',
-                desc: 'Gained hands-on experience with Kubernetes and cloud-native concepts aligned with Cloud Native Associate-level knowledge. Worked with Pods, Deployments, and Services, and understood core principles such as container orchestration, scalability, and microservices architecture.',
-                tags: ['Kubernetes', 'Cloud Native', 'Containers', 'Microservices', 'Orchestration'],
-            },
-            {
-                title: 'Infrastructure Automation using Ansible Playbooks',
-                desc: 'Implemented infrastructure automation using Ansible playbooks to provision and configure systems. Automated tasks such as package installation, service management, and environment setup across multiple hosts using agentless architecture.',
-                tags: ['Ansible', 'Automation', 'Provisioning', 'DevOps', 'Linux'],
-            },
-        ];
+<!-- SLIDE 2: Why FEAF -->
+<div class="slide" data-index="2">
+  <div class="glow-orb" style="width:400px;height:400px;background:#00ffc4;bottom:-100px;right:-100px;animation-delay:2s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">01 — Асуудал</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">Яагаад бий болсон вэ?</h2>
+    <p class="anim-3 text-neutral-400 text-sm mb-8">1990-ээд оны дунд үеийн АНУ-ын засгийн газрын ноцтой бэрхшээлүүд:</p>
+    <div class="anim-4 space-y-3">
+      <div class="card flex items-start gap-4"><span class="text-2xl font-bold text-red-400/60" style="min-width:28px">01</span><div><p class="text-sm font-medium text-white">Системийн хуваагдмал байдал</p><p class="text-xs text-neutral-500 mt-1">Яам бүр өөрийн тусдаа IT систем барьж, ижил функцийг давхардуулан хөрөнгө зарцуулж байсан</p></div></div>
+      <div class="card flex items-start gap-4"><span class="text-2xl font-bold text-red-400/60" style="min-width:28px">02</span><div><p class="text-sm font-medium text-white">Мэдээллийн хориглолт</p><p class="text-xs text-neutral-500 mt-1">Агентлагуудын хооронд өгөгдөл солилцоход техникийн болон зохион байгуулалтын саад байсан</p></div></div>
+      <div class="card flex items-start gap-4"><span class="text-2xl font-bold text-red-400/60" style="min-width:28px">03</span><div><p class="text-sm font-medium text-white">IT зардлын хяналтгүй өсөлт</p><p class="text-xs text-neutral-500 mt-1">Холбооны IT зардал хязгааргүй нэмэгдэж, үр ашиг тодорхойгүй байсан</p></div></div>
+      <div class="card flex items-start gap-4"><span class="text-2xl font-bold text-red-400/60" style="min-width:28px">04</span><div><p class="text-sm font-medium text-white">Стандартчилалгүй байдал</p><p class="text-xs text-neutral-500 mt-1">Систем бүр өөрийн гэсэн технологи, формат, архитектур ашиглаж байсан</p></div></div>
+      <div class="card flex items-start gap-4"><span class="text-2xl font-bold text-red-400/60" style="min-width:28px">05</span><div><p class="text-sm font-medium text-white">Стратегитай уялдаагүй байдал</p><p class="text-xs text-neutral-500 mt-1">IT хөрөнгө оруулалт улс төрийн болон үйл ажиллагааны зорилттой холбоогүй байсан</p></div></div>
+    </div>
+  </div>
+</div>
 
-        /* ===================================================
-           Theme Context
-        =================================================== */
-        const ThemeCtx = createContext();
-        function ThemeProvider({ children }) {
-            const [dark, setDark] = useState(() => {
-                const saved = localStorage.getItem('theme');
-                return saved ? saved === 'dark' : true;
-            });
-            useEffect(() => {
-                document.documentElement.classList.toggle('dark', dark);
-                localStorage.setItem('theme', dark ? 'dark' : 'light');
-            }, [dark]);
-            return (
-                <ThemeCtx.Provider value={{ dark, toggle: () => setDark(d => !d) }}>
-                    {children}
-                </ThemeCtx.Provider>
-            );
-        }
-        function useTheme() { return useContext(ThemeCtx); }
+<!-- SLIDE 3: Clinger-Cohen Act -->
+<div class="slide" data-index="3">
+  <div class="glow-orb" style="width:500px;height:500px;background:#047857;top:-150px;right:-200px;"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">01 — Хуулийн суурь</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">Clinger-Cohen Act <span class="text-neutral-500 text-2xl md:text-3xl">(1996)</span></h2>
+    <div class="anim-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="card">
+        <p class="text-xs text-neutral-500 uppercase tracking-wider mb-3">Шаардлага</p>
+        <ul class="space-y-3 text-sm text-neutral-300">
+          <li class="flex items-start gap-2"><i data-lucide="check" style="width:16px;height:16px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i>Яам бүрт CIO томилох</li>
+          <li class="flex items-start gap-2"><i data-lucide="check" style="width:16px;height:16px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i>EA байгуулах үүрэг хүлээлгэх</li>
+          <li class="flex items-start gap-2"><i data-lucide="check" style="width:16px;height:16px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i>IT хөрөнгө оруулалтыг зохицуулах</li>
+          <li class="flex items-start gap-2"><i data-lucide="check" style="width:16px;height:16px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i>Үр дүнд тулгуурласан менежмент</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="text-xs text-neutral-500 uppercase tracking-wider mb-3">Үр дүн</p>
+        <ul class="space-y-3 text-sm text-neutral-300">
+          <li class="flex items-start gap-2"><i data-lucide="zap" style="width:16px;height:16px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i>FEAF-ийн эрх зүйн суурь бий болсон</li>
+          <li class="flex items-start gap-2"><i data-lucide="zap" style="width:16px;height:16px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i>OMB-д IT хяналтын бүрэн эрх олгогдсон</li>
+          <li class="flex items-start gap-2"><i data-lucide="zap" style="width:16px;height:16px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i>Засгийн газрын EA хөдөлгөөн эхэлсэн</li>
+          <li class="flex items-start gap-2"><i data-lucide="zap" style="width:16px;height:16px;color:#00ffc4;flex-shrink:0;margin-top:2px"></i>FEAF → заавар биш, хуулийн хүчинтэй засаглалын хэрэгсэл</li>
+        </ul>
+      </div>
+    </div>
+    <div class="anim-4 mt-8 p-4 rounded-xl bg-[#00332a] border border-[#00ffc4]/20">
+      <p class="text-sm text-[#00ffc4] flex items-start gap-2"><i data-lucide="alert-triangle" style="width:16px;height:16px;flex-shrink:0;margin-top:1px"></i>OMB нь FEAF-ийн дагуу гаргасан EA баримт бичгийн үндсэн дээр IT хөрөнгө оруулалтыг зөвшөөрөх эсвэл татгалзах эрх эдэлдэг.</p>
+    </div>
+  </div>
+</div>
 
-        /* ===================================================
-           Custom Hooks
-        =================================================== */
-        // Typing effect for terminal
-        function useTypingEffect(lines, speed = 28, linePause = 500) {
-            const [displayed, setDisplayed] = useState([]);
-            useEffect(() => {
-                let lineIdx = 0, charIdx = 0;
-                const linesCopy = [...displayed]; // start fresh only on mount
-                setDisplayed([]);
-                function tick() {
-                    if (lineIdx >= lines.length) return;
-                    const line = lines[lineIdx];
-                    if (charIdx === 0 && line.type === 'cmd') {
-                        setDisplayed(prev => [...prev, { type: 'cmd', text: '' }]);
-                    }
-                    if (charIdx < line.text.length) {
-                        const ch = line.text[charIdx];
-                        const delay = ch === ' ' ? speed * 0.5 : speed;
-                        setTimeout(() => {
-                            setDisplayed(prev => {
-                                const updated = [...prev];
-                                const last = updated[updated.length - 1];
-                                if (last && last.type === line.type && last.text.length < line.text.length) {
-                                    updated[updated.length - 1] = { ...last, text: last.text + ch };
-                                } else {
-                                    updated.push({ type: line.type, text: ch });
-                                }
-                                return updated;
-                            });
-                            charIdx++;
-                            tick();
-                        }, delay);
-                    } else {
-                        charIdx = 0;
-                        lineIdx++;
-                        setTimeout(tick, linePause);
-                    }
-                }
-                const startTimeout = setTimeout(tick, 600);
-                return () => clearTimeout(startTimeout);
-            }, []);
-            return displayed;
-        }
+<!-- SLIDE 4: Timeline -->
+<div class="slide" data-index="4">
+  <div class="glow-orb" style="width:400px;height:400px;background:#00ffc4;top:-100px;left:50%;animation-delay:4s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">02 — Түүх</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-10">Хөгжлийн Үе Шат</h2>
+    <div class="anim-3 relative">
+      <div class="absolute left-[18px] top-2 bottom-2 w-px bg-gradient-to-b from-[#047857] via-[#00ffc4] to-[#047857]/30"></div>
+      <div class="space-y-6">
+        <div class="flex items-start gap-5"><div class="w-9 h-9 rounded-full bg-[#047857] flex items-center justify-center flex-shrink-0 z-10 shadow-[0_0_15px_rgba(4,120,87,0.5)]"><span class="text-xs font-bold text-white">96</span></div><div><p class="text-sm font-semibold text-white">Clinger-Cohen Act</p><p class="text-xs text-neutral-500">EA-ийн эрх зүйн суурь бий болсон</p></div></div>
+        <div class="flex items-start gap-5"><div class="w-9 h-9 rounded-full bg-[#047857] flex items-center justify-center flex-shrink-0 z-10 shadow-[0_0_15px_rgba(4,120,87,0.5)]"><span class="text-xs font-bold text-white">99</span></div><div><p class="text-sm font-semibold text-white">FEAF v1.0</p><p class="text-xs text-neutral-500">Дөрвөн давхрагын загвар: Бизнес, Өгөгдөл, Систем, Технологи</p></div></div>
+        <div class="flex items-start gap-5"><div class="w-9 h-9 rounded-full bg-[#047857] flex items-center justify-center flex-shrink-0 z-10 shadow-[0_0_15px_rgba(4,120,87,0.5)]"><span class="text-[10px] font-bold text-white">02-12</span></div><div><p class="text-sm font-semibold text-white">FEA CRM v1 → v3.1</p><p class="text-xs text-neutral-500">Таван Reference Model хөгжсөн — FEAF-ийн хамгийн том шинэчлэл</p></div></div>
+        <div class="flex items-start gap-5"><div class="w-9 h-9 rounded-full bg-[#00ffc4] flex items-center justify-center flex-shrink-0 z-10 shadow-[0_0_20px_rgba(0,255,196,0.4)]"><span class="text-xs font-bold text-black">13</span></div><div><p class="text-sm font-semibold text-[#00ffc4]">FEAF II</p><p class="text-xs text-neutral-500">Бизнес голлосон, үр дүнд чиглэсэн, CPM нэвтрүүлсэн</p></div></div>
+        <div class="flex items-start gap-5"><div class="w-9 h-9 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center flex-shrink-0 z-10"><span class="text-[10px] font-bold text-neutral-400">18+</span></div><div><p class="text-sm font-semibold text-neutral-300">FEA Practice Guidance</p><p class="text-xs text-neutral-500">Cloud Smart, Zero Trust, Agile/DevSecOps хослуулсан</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // Scroll reveal observer
-        function useScrollReveal() {
-            useEffect(() => {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-                document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
-                return () => observer.disconnect();
-            });
-        }
+<!-- SLIDE 5: FEAF I vs II -->
+<div class="slide" data-index="5">
+  <div class="glow-orb" style="width:400px;height:400px;background:#047857;bottom:-100px;left:-100px;animation-delay:2s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">02 — Шинэчлэл</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">FEAF v1 → FEAF II</h2>
+    <div class="anim-3 overflow-hidden rounded-2xl border border-white/5">
+      <div class="grid grid-cols-2 text-xs font-bold uppercase tracking-wider">
+        <div class="p-4 bg-neutral-900/80 text-red-400">Хуучин (v1)</div>
+        <div class="p-4 bg-[#00332a]/50 text-[#00ffc4]">Шинэ (FEAF II)</div>
+      </div>
+      <div class="divide-y divide-white/5">
+        <div class="grid grid-cols-2 text-sm"><div class="p-4 text-neutral-400">Ганц байгууллагад чиглэсэн</div><div class="p-4 text-neutral-200">Агентлаг хоорондын хамтын ажиллагаа</div></div>
+        <div class="grid grid-cols-2 text-sm"><div class="p-4 text-neutral-400">Баримт бичигт чиглэсэн</div><div class="p-4 text-neutral-200">Үр дүнд чиглэсэн (outcome-focused)</div></div>
+        <div class="grid grid-cols-2 text-sm"><div class="p-4 text-neutral-400">Статик загвар</div><div class="p-4 text-neutral-200">Динамик, тасралтгүй сайжрах</div></div>
+        <div class="grid grid-cols-2 text-sm"><div class="p-4 text-neutral-400">OMB тайлагналт давамгайлсан</div><div class="p-4 text-neutral-200">Бизнес хэрэглэгчийг голлосон</div></div>
+        <div class="grid grid-cols-2 text-sm"><div class="p-4 text-neutral-400">Техник архитектур голлосон</div><div class="p-4 text-neutral-200">Бизнес архитектур голлосон</div></div>
+      </div>
+    </div>
+    <div class="anim-4 mt-6 card"><p class="text-sm font-medium text-white mb-1">CPM — Collaborative Planning Methodology</p><p class="text-xs text-neutral-400">FEAF II-д нэвтрүүлсэн — агентлагуудад хамтарч EA боловсруулах дөрвөн алхамтын арга зам</p></div>
+  </div>
+</div>
 
-        // Scroll progress
-        function useScrollProgress() {
-            const [progress, setProgress] = useState(0);
-            useEffect(() => {
-                const onScroll = () => {
-                    const h = document.documentElement.scrollHeight - window.innerHeight;
-                    setProgress(h > 0 ? (window.scrollY / h) * 100 : 0);
-                };
-                window.addEventListener('scroll', onScroll, { passive: true });
-                return () => window.removeEventListener('scroll', onScroll);
-            }, []);
-            return progress;
-        }
+<!-- SLIDE 6: 5 Reference Models Overview -->
+<div class="slide" data-index="6">
+  <div class="glow-orb" style="width:600px;height:600px;background:#00ffc4;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1s"></div>
+  <div class="max-w-4xl w-full">
+    <div class="anim-1 mb-4"><span class="tag">03 — Бүтэц</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-10">Таван Reference Model</h2>
+    <div class="anim-3 space-y-4">
+      <div class="card flex items-center gap-5 cursor-default group"><div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#00ffc4] to-[#047857] flex items-center justify-center flex-shrink-0 shadow-[0_0_25px_rgba(0,255,196,0.25)] group-hover:shadow-[0_0_40px_rgba(0,255,196,0.4)] transition-all"><span class="text-lg font-bold text-black">PRM</span></div><div><p class="text-sm font-semibold text-white">Performance Reference Model</p><p class="text-xs text-neutral-500">Хэмжилт, үр дүнгийн шалтгаан-үр дагаварын холбоо</p></div></div>
+      <div class="card flex items-center gap-5 cursor-default group"><div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#047857] to-[#064e3b] flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(4,120,87,0.25)] group-hover:shadow-[0_0_35px_rgba(4,120,87,0.4)] transition-all"><span class="text-lg font-bold text-white">BRM</span></div><div><p class="text-sm font-semibold text-white">Business Reference Model</p><p class="text-xs text-neutral-500">Бизнесийн функцийн нэгдсэн ангилал</p></div></div>
+      <div class="card flex items-center gap-5 cursor-default group"><div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#047857] to-[#064e3b] flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(4,120,87,0.25)] group-hover:shadow-[0_0_35px_rgba(4,120,87,0.4)] transition-all"><span class="text-lg font-bold text-white">SRM</span></div><div><p class="text-sm font-semibold text-white">Service Component Reference Model</p><p class="text-xs text-neutral-500">IT үйлчилгээний бүрэлдэхүүн, дахин ашиглалт</p></div></div>
+      <div class="card flex items-center gap-5 cursor-default group"><div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#047857] to-[#064e3b] flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(4,120,87,0.25)] group-hover:shadow-[0_0_35px_rgba(4,120,87,0.4)] transition-all"><span class="text-lg font-bold text-white">DRM</span></div><div><p class="text-sm font-semibold text-white">Data Reference Model</p><p class="text-xs text-neutral-500">Өгөгдлийн стандарт, удирдлага, солилцоо</p></div></div>
+      <div class="card flex items-center gap-5 cursor-default group"><div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#047857] to-[#064e3b] flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(4,120,87,0.25)] group-hover:shadow-[0_0_35px_rgba(4,120,87,0.4)] transition-all"><span class="text-lg font-bold text-white">TRM</span></div><div><p class="text-sm font-semibold text-white">Technical Reference Model</p><p class="text-xs text-neutral-500">Технологийн стандарт, интерфейс</p></div></div>
+    </div>
+  </div>
+</div>
 
-        // Show scroll-top button
-        function useScrollTop(showAt = 400) {
-            const [show, setShow] = useState(false);
-            useEffect(() => {
-                const onScroll = () => setShow(window.scrollY > showAt);
-                window.addEventListener('scroll', onScroll, { passive: true });
-                return () => window.removeEventListener('scroll', onScroll);
-            }, [showAt]);
-            return show;
-        }
+<!-- SLIDE 7: PRM -->
+<div class="slide" data-index="7">
+  <div class="glow-orb" style="width:400px;height:400px;background:#00ffc4;top:-100px;right:-100px;"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">03 — PRM</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">Performance Reference Model</h2>
+    <p class="anim-3 text-neutral-400 text-sm mb-8">IT хөрөнгө оруулалт, бизнесийн зорилт, үр дүнгийн холбоог тодорхойлох</p>
+    <div class="anim-4 flex flex-col items-center mb-10">
+      <div class="flex flex-col items-center gap-2 text-center">
+        <div class="px-4 py-2 rounded-lg bg-neutral-900 border border-white/10 text-xs text-neutral-300">Оролт <span class="text-neutral-600">(Inputs)</span></div>
+        <i data-lucide="arrow-down" class="flow-arrow" style="width:16px;height:16px"></i>
+        <div class="px-4 py-2 rounded-lg bg-neutral-900 border border-white/10 text-xs text-neutral-300">Үйл ажиллагаа <span class="text-neutral-600">(Activities)</span></div>
+        <i data-lucide="arrow-down" class="flow-arrow" style="width:16px;height:16px"></i>
+        <div class="px-4 py-2 rounded-lg bg-neutral-900 border border-white/10 text-xs text-neutral-300">Гаралт <span class="text-neutral-600">(Outputs)</span></div>
+        <i data-lucide="arrow-down" class="flow-arrow" style="width:16px;height:16px"></i>
+        <div class="px-4 py-2 rounded-lg bg-neutral-900 border border-white/10 text-xs text-neutral-300">Үр дүн <span class="text-neutral-600">(Outcomes)</span></div>
+        <i data-lucide="arrow-down" class="flow-arrow" style="width:16px;height:16px"></i>
+        <div class="px-4 py-2 rounded-lg bg-[#00332a] border border-[#00ffc4]/20 text-xs text-[#00ffc4] font-medium">Нийгмийн нөлөө</div>
+      </div>
+    </div>
+    <div class="anim-5 grid grid-cols-3 gap-3 text-center text-xs">
+      <div class="card py-3"><p class="text-[#00ffc4] font-bold mb-1">Mission</p><p class="text-neutral-500">Иргэдийн сэтгэл ханамж</p></div>
+      <div class="card py-3"><p class="text-[#00ffc4] font-bold mb-1">Customer</p><p class="text-neutral-500">Нэвтрэх хувь</p></div>
+      <div class="card py-3"><p class="text-[#00ffc4] font-bold mb-1">Technology</p><p class="text-neutral-500">Uptime хувь</p></div>
+    </div>
+  </div>
+</div>
 
-        // Toast state
-        function useToast() {
-            const [toast, setToast] = useState(null);
-            const show = useCallback((msg, type = 'success') => {
-                setToast({ msg, type, id: Date.now() });
-                setTimeout(() => setToast(null), 3500);
-            }, []);
-            return { toast, show };
-        }
+<!-- SLIDE 8: BRM -->
+<div class="slide" data-index="8">
+  <div class="glow-orb" style="width:500px;height:500px;background:#047857;bottom:-200px;right:-150px;animation-delay:3s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">03 — BRM</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">Business Reference Model</h2>
+    <p class="anim-3 text-neutral-400 text-sm mb-8">Засгийн газрын бүх бизнесийн функц, үйлчилгээг стандартчилсан ангилалаар дүрслэх</p>
+    <div class="anim-4 flex items-center justify-center gap-3 mb-10">
+      <div class="px-5 py-3 rounded-xl bg-[#00332a] border border-[#00ffc4]/20 text-sm text-[#00ffc4] font-semibold">Line of Business</div>
+      <i data-lucide="arrow-right" class="flow-arrow" style="width:18px;height:18px"></i>
+      <div class="px-5 py-3 rounded-xl bg-neutral-900 border border-white/10 text-sm text-neutral-300">Sub-function</div>
+      <i data-lucide="arrow-right" class="flow-arrow" style="width:18px;height:18px"></i>
+      <div class="px-5 py-3 rounded-xl bg-neutral-900 border border-white/10 text-sm text-neutral-300">Activity</div>
+    </div>
+    <div class="anim-5 grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="card"><p class="text-xs font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="users" style="width:14px;height:14px;color:#00ffc4"></i> Services for Citizens</p><p class="text-xs text-neutral-500">Батлан хамгаалах, Гэмт хэргийн шийдвэрлэлт, Боловсрол</p></div>
+      <div class="card"><p class="text-xs font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="truck" style="width:14px;height:14px;color:#00ffc4"></i> Mode of Delivery</p><p class="text-xs text-neutral-500">Шуудан, Тээвэр, Эрүүл мэндийн үйлчилгээ</p></div>
+      <div class="card"><p class="text-xs font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="settings" style="width:14px;height:14px;color:#00ffc4"></i> Support Delivery</p><p class="text-xs text-neutral-500">Мэдээллийн санд хандалт, Мэдээллийн удирдлага</p></div>
+      <div class="card"><p class="text-xs font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="building" style="width:14px;height:14px;color:#00ffc4"></i> Government Resources</p><p class="text-xs text-neutral-500">Хүний нөөц, Санхүү, IT удирдлага</p></div>
+    </div>
+  </div>
+</div>
 
-        /* ===================================================
-           Components
-        =================================================== */
+<!-- SLIDE 9: SRM -->
+<div class="slide" data-index="9">
+  <div class="glow-orb" style="width:400px;height:400px;background:#00ffc4;top:50%;left:-100px;animation-delay:5s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">03 — SRM</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">Service Component Reference Model</h2>
+    <p class="anim-3 text-neutral-400 text-sm mb-8">IT системийг "үйлчилгээний бүрэлдэхүүн" болгон задалж, дахин ашиглах боломжийг тодорхойлох</p>
+    <div class="anim-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div class="card text-center py-5"><i data-lucide="headphones" style="width:24px;height:24px;color:#00ffc4;margin:0 auto 8px"></i><p class="text-xs font-semibold text-white">Customer Services</p><p class="text-[10px] text-neutral-600 mt-1">CRM, портал</p></div>
+      <div class="card text-center py-5"><i data-lucide="workflow" style="width:24px;height:24px;color:#00ffc4;margin:0 auto 8px"></i><p class="text-xs font-semibold text-white">Process Automation</p><p class="text-[10px] text-neutral-600 mt-1">Workflow</p></div>
+      <div class="card text-center py-5"><i data-lucide="bar-chart-3" style="width:24px;height:24px;color:#00ffc4;margin:0 auto 8px"></i><p class="text-xs font-semibold text-white">Business Analytics</p><p class="text-[10px] text-neutral-600 mt-1">BI, тайлан</p></div>
+      <div class="card text-center py-5"><i data-lucide="database" style="width:24px;height:24px;color:#00ffc4;margin:0 auto 8px"></i><p class="text-xs font-semibold text-white">Digital Assets</p><p class="text-[10px] text-neutral-600 mt-1">Контент, архив</p></div>
+      <div class="card text-center py-5"><i data-lucide="calculator" style="width:24px;height:24px;color:#00ffc4;margin:0 auto 8px"></i><p class="text-xs font-semibold text-white">Back Office</p><p class="text-[10px] text-neutral-600 mt-1">HR, ERP</p></div>
+      <div class="card text-center py-5"><i data-lucide="life-buoy" style="width:24px;height:24px;color:#00ffc4;margin:0 auto 8px"></i><p class="text-xs font-semibold text-white">Support</p><p class="text-[10px] text-neutral-600 mt-1">Helpdesk</p></div>
+      <div class="card text-center py-5 col-span-2"><i data-lucide="briefcase" style="width:24px;height:24px;color:#00ffc4;margin:0 auto 8px"></i><p class="text-xs font-semibold text-white">Business Management</p><p class="text-[10px] text-neutral-600 mt-1">Санхүүгийн удирдлага</p></div>
+    </div>
+    <div class="anim-5 mt-6 p-4 rounded-xl bg-[#00332a] border border-[#00ffc4]/20"><p class="text-sm text-[#00ffc4] flex items-start gap-2"><i data-lucide="lightbulb" style="width:16px;height:16px;flex-shrink:0;margin-top:1px"></i>Агентлаг A, B хоёул тусдаа "иргэний бүртгэлийн" систем барьж байгаа бол SRM нэгдсэн үйлчилгээ болох боломжтойг тодорхойлж, давхардлыг арилгана.</p></div>
+  </div>
+</div>
 
-        // --- Scroll Progress Bar ---
-        function ScrollProgressBar({ progress }) {
-            return <div className="scroll-progress" style={{ width: progress + '%' }} />;
-        }
+<!-- SLIDE 10: DRM & TRM -->
+<div class="slide" data-index="10">
+  <div class="glow-orb" style="width:400px;height:400px;background:#047857;top:-100px;right:-100px;animation-delay:2s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">03 — DRM & TRM</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">Өгөгдөл ба Технологи</h2>
+    <div class="anim-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-[#00332a] border border-[#00ffc4]/20 flex items-center justify-center"><span class="text-sm font-bold text-[#00ffc4]">DRM</span></div><p class="text-sm font-semibold text-white">Data Reference Model</p></div>
+        <div class="space-y-3">
+          <div class="card py-3 px-4"><p class="text-xs font-semibold text-white mb-1">Data Context</p><p class="text-[11px] text-neutral-500">Ямар зорилгоор, ямар хууль, ямар хэрэгцээ</p></div>
+          <div class="card py-3 px-4"><p class="text-xs font-semibold text-white mb-1">Data Description</p><p class="text-[11px] text-neutral-500">Логик болон физик өгөгдлийн загвар</p></div>
+          <div class="card py-3 px-4"><p class="text-xs font-semibold text-white mb-1">Data Sharing</p><p class="text-[11px] text-neutral-500">Нэвтрэх зөвшөөрөл, протокол, стандарт</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-[#00332a] border border-[#00ffc4]/20 flex items-center justify-center"><span class="text-sm font-bold text-[#00ffc4]">TRM</span></div><p class="text-sm font-semibold text-white">Technical Reference Model</p></div>
+        <div class="space-y-3">
+          <div class="card py-3 px-4"><p class="text-xs font-semibold text-white mb-1">Service Access</p><p class="text-[11px] text-neutral-500">WCAG 2.1, Section 508</p></div>
+          <div class="card py-3 px-4"><p class="text-xs font-semibold text-white mb-1">Platform & Infra</p><p class="text-[11px] text-neutral-500">FedRAMP Cloud</p></div>
+          <div class="card py-3 px-4"><p class="text-xs font-semibold text-white mb-1">Integration</p><p class="text-[11px] text-neutral-500">REST/SOAP, JSON, XML, HL7</p></div>
+          <div class="card py-3 px-4"><p class="text-xs font-semibold text-white mb-1">Security</p><p class="text-[11px] text-neutral-500">HSPD-12, PIV Card</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // --- Scroll to Top ---
-        function ScrollToTop({ visible }) {
-            const onClick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-            return (
-                <button
-                    className={`scroll-top-btn ${visible ? 'visible' : ''}`}
-                    onClick={onClick}
-                    aria-label="Scroll to top"
-                >
-                    <i className="fa-solid fa-arrow-up"></i>
-                </button>
-            );
-        }
+<!-- SLIDE 11: Model Interconnection -->
+<div class="slide" data-index="11">
+  <div class="glow-orb" style="width:500px;height:500px;background:#00ffc4;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1s"></div>
+  <div class="max-w-3xl mx-auto text-center">
+    <div class="anim-1 mb-4"><span class="tag">03 — Уялдаа</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-10">Загваруудын Харилцан Уялдаа</h2>
+    <div class="anim-3 flex flex-col items-center gap-4">
+      <div class="w-full max-w-md px-6 py-4 rounded-xl bg-gradient-to-r from-[#00ffc4] to-[#047857] text-black font-bold text-sm text-center shadow-[0_0_40px_rgba(0,255,196,0.2)]">BRM — "Юу хийх вэ?"</div>
+      <i data-lucide="arrow-down" class="flow-arrow" style="width:20px;height:20px"></i>
+      <div class="w-full max-w-md px-6 py-4 rounded-xl bg-neutral-900 border border-[#047857]/50 text-white font-semibold text-sm text-center">SRM — "Ямар IT үйлчилгээгээр?"</div>
+      <i data-lucide="arrow-down" class="flow-arrow" style="width:20px;height:20px"></i>
+      <div class="w-full max-w-md px-6 py-4 rounded-xl bg-neutral-900 border border-white/5 text-white font-semibold text-sm text-center">DRM — "Ямар өгөгдөл ашиглах вэ?"</div>
+      <i data-lucide="arrow-down" class="flow-arrow" style="width:20px;height:20px"></i>
+      <div class="w-full max-w-md px-6 py-4 rounded-xl bg-neutral-900 border border-white/5 text-white font-semibold text-sm text-center">TRM — "Ямар технологиор?"</div>
+      <i data-lucide="arrow-down" class="flow-arrow" style="width:20px;height:20px"></i>
+      <div class="w-full max-w-md px-6 py-4 rounded-xl bg-[#00332a] border border-[#00ffc4]/20 text-[#00ffc4] font-semibold text-sm text-center">PRM — "Хэрхэн хэмжих вэ?" <span class="font-normal text-[#00ffc4]/60 text-xs">(Бүх давхрагыг хамрана)</span></div>
+    </div>
+  </div>
+</div>
 
-        // --- Toast ---
-        function Toast({ data }) {
-            if (!data) return null;
-            return (
-                <div
-                    className="toast-enter"
-                    style={{
-                        position: 'fixed', top: 90, right: 20, zIndex: 999,
-                        padding: '14px 22px', borderRadius: 10,
-                        background: data.type === 'success' ? 'var(--accent)' : '#ef4444',
-                        color: data.type === 'success' ? 'var(--accent-text)' : '#fff',
-                        fontWeight: 600, fontSize: 14,
-                        boxShadow: '0 8px 30px rgba(0,0,0,0.25)',
-                        fontFamily: "'DM Sans', sans-serif",
-                    }}
-                >
-                    <i className={`fa-solid ${data.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`} style={{ marginRight: 8 }}></i>
-                    {data.msg}
-                </div>
-            );
-        }
+<!-- SLIDE 12: Implementation -->
+<div class="slide" data-index="12">
+  <div class="glow-orb" style="width:400px;height:400px;background:#047857;bottom:-100px;left:-100px;animation-delay:4s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">04 — Хэрэгжилт</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-10">Хэрэгжилтийн Алхам</h2>
+    <div class="anim-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="card relative overflow-hidden"><div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#00ffc4] to-transparent"></div><span class="text-3xl font-bold text-[#00ffc4]/20">01</span><p class="text-sm font-semibold text-white mt-1 mb-2">Орчны тодорхойлолт</p><p class="text-xs text-neutral-500">Стратеги судлах, оролцогч талууд тодорхойлох, ARB байгуулах</p></div>
+      <div class="card relative overflow-hidden"><div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#00ffc4] to-transparent"></div><span class="text-3xl font-bold text-[#00ffc4]/20">02</span><p class="text-sm font-semibold text-white mt-1 mb-2">Baseline (AS-IS)</p><p class="text-xs text-neutral-500">Одоогийн бизнес, өгөгдөл, систем, технологийн нарийвчилсан дүрслэл</p></div>
+      <div class="card relative overflow-hidden"><div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#00ffc4] to-transparent"></div><span class="text-3xl font-bold text-[#00ffc4]/20">03</span><p class="text-sm font-semibold text-white mt-1 mb-2">Target (TO-BE)</p><p class="text-xs text-neutral-500">CRM ашиглан зорилтот архитектур зурах, GAP Analysis хийх</p></div>
+      <div class="card relative overflow-hidden"><div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#00ffc4] to-transparent"></div><span class="text-3xl font-bold text-[#00ffc4]/20">04</span><p class="text-sm font-semibold text-white mt-1 mb-2">Шилжилтийн Төлөвлөгөө</p><p class="text-xs text-neutral-500">Хөрөнгө оруулалт, дарааллын тэргүүлэлт, эрсдлийн үнэлгээ</p></div>
+      <div class="card relative overflow-hidden md:col-span-2"><div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#00ffc4] to-transparent"></div><span class="text-3xl font-bold text-[#00ffc4]/20">05</span><p class="text-sm font-semibold text-white mt-1 mb-2">Хяналт ба Засаглал</p><p class="text-xs text-neutral-500">OMB Exhibit 53/300 тайлан, CIO Council зохицуулалт, GAO аудит</p></div>
+    </div>
+  </div>
+</div>
 
-        // --- Navbar ---
-        function Navbar() {
-            const { dark, toggle } = useTheme();
-            const [menuOpen, setMenuOpen] = useState(false);
-            const [scrolled, setScrolled] = useState(false);
+<!-- SLIDE 13: DHS Case -->
+<div class="slide" data-index="13">
+  <div class="glow-orb" style="width:500px;height:500px;background:#00ffc4;top:-150px;right:-200px;animation-delay:2s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">04 — Кейс Судалгаа</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-4">DHS: 22 Агентлаг Нэгтгэх</h2>
+    <p class="anim-3 text-neutral-400 text-sm mb-8">Department of Homeland Security — 2003 онд 22 янз бүрийн агентлаг нэгтгэсэн</p>
+    <div class="anim-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-4">
+        <div class="card flex items-start gap-3"><span class="w-7 h-7 rounded-md bg-[#00332a] flex items-center justify-center flex-shrink-0 text-xs font-bold text-[#00ffc4]">B</span><div><p class="text-xs font-semibold text-white">BRM</p><p class="text-[11px] text-neutral-500">22 агентлагийн бизнесийн функцийн давхардлыг тодорхойлсон</p></div></div>
+        <div class="card flex items-start gap-3"><span class="w-7 h-7 rounded-md bg-[#00332a] flex items-center justify-center flex-shrink-0 text-xs font-bold text-[#00ffc4]">S</span><div><p class="text-xs font-semibold text-white">SRM</p><p class="text-[11px] text-neutral-500">300+ системийг 80 болгон бууруулах зорилт</p></div></div>
+        <div class="card flex items-start gap-3"><span class="w-7 h-7 rounded-md bg-[#00332a] flex items-center justify-center flex-shrink-0 text-xs font-bold text-[#00ffc4]">D</span><div><p class="text-xs font-semibold text-white">DRM</p><p class="text-[11px] text-neutral-500">Нэгдсэн аюулын мэдээллийн сангийн стандарт</p></div></div>
+        <div class="card flex items-start gap-3"><span class="w-7 h-7 rounded-md bg-[#00332a] flex items-center justify-center flex-shrink-0 text-xs font-bold text-[#00ffc4]">T</span><div><p class="text-xs font-semibold text-white">TRM</p><p class="text-[11px] text-neutral-500">Нэгдсэн сүлжээний стандарт</p></div></div>
+      </div>
+      <div class="card flex flex-col items-center justify-center text-center" style="background:linear-gradient(to bottom right, rgba(0,255,196,0.05), transparent)">
+        <p class="text-5xl font-bold text-[#00ffc4] mb-2" style="text-shadow:0 0 30px rgba(0,255,196,0.3)">~40%</p>
+        <p class="text-sm text-white font-medium mb-1">IT давхардлын бууралт</p>
+        <p class="text-xs text-neutral-500 mb-6">3 жилийн хугацаанд</p>
+        <p class="text-3xl font-bold text-white mb-2">$200M+</p>
+        <p class="text-sm text-neutral-400">Жилийн хэмнэлт</p>
+        <p class="text-[10px] text-neutral-600 mt-3">Эх сурвалж: GAO тайлан, 2007</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-            useEffect(() => {
-                const onScroll = () => setScrolled(window.scrollY > 20);
-                window.addEventListener('scroll', onScroll, { passive: true });
-                return () => window.removeEventListener('scroll', onScroll);
-            }, []);
+<!-- SLIDE 14: FEAF vs TOGAF -->
+<div class="slide" data-index="14">
+  <div class="glow-orb" style="width:400px;height:400px;background:#047857;top:-100px;left:-100px;animation-delay:3s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">05 — Харьцуулалт</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">FEAF vs TOGAF</h2>
+    <div class="anim-3 overflow-hidden rounded-2xl border border-white/5">
+      <div class="grid grid-cols-3 text-xs font-bold uppercase tracking-wider"><div class="p-3 bg-neutral-900/80 text-neutral-500">Шалгуур</div><div class="p-3 bg-[#00332a]/50 text-[#00ffc4]">FEAF</div><div class="p-3 bg-neutral-900/80 text-neutral-300">TOGAF</div></div>
+      <div class="divide-y divide-white/5 text-sm">
+        <div class="grid grid-cols-3"><div class="p-3 text-neutral-500 text-xs">Зорилтот хэрэглэгч</div><div class="p-3 text-neutral-300 text-xs">Засгийн газар</div><div class="p-3 text-neutral-300 text-xs">Бүх салбар</div></div>
+        <div class="grid grid-cols-3"><div class="p-3 text-neutral-500 text-xs">Аргачлал</div><div class="p-3 text-neutral-300 text-xs">CPM, Сегмент</div><div class="p-3 text-neutral-300 text-xs">ADM</div></div>
+        <div class="grid grid-cols-3"><div class="p-3 text-neutral-500 text-xs">Засаглал</div><div class="p-3 text-neutral-300 text-xs">OMB, CIO Council</div><div class="p-3 text-neutral-300 text-xs">ARB</div></div>
+        <div class="grid grid-cols-3"><div class="p-3 text-neutral-500 text-xs">Нийцтэй байдал</div><div class="p-3 text-neutral-300 text-xs">Хуулийн шаардлага</div><div class="p-3 text-neutral-300 text-xs">Сонгон хэрэглэгддэг</div></div>
+        <div class="grid grid-cols-3"><div class="p-3 text-neutral-500 text-xs">Гэрчилгээ</div><div class="p-3 text-neutral-300 text-xs">Байхгүй</div><div class="p-3 text-neutral-300 text-xs">TOGAF сертификат</div></div>
+        <div class="grid grid-cols-3"><div class="p-3 text-neutral-500 text-xs">Уян хатан байдал</div><div class="p-3 text-neutral-300 text-xs">Бага</div><div class="p-3 text-neutral-300 text-xs">Өндөр</div></div>
+      </div>
+    </div>
+    <div class="anim-4 mt-6 p-4 rounded-xl bg-neutral-900/50 border border-white/5"><p class="text-sm text-neutral-300">Практикт олон холбооны агентлаг <strong class="text-white">FEAF + TOGAF</strong>-ийг хослуулан хэрэглэдэг — FEAF-аар засаглал, TOGAF-аар аргачлал гэсэн хослол.</p></div>
+  </div>
+</div>
 
-            const handleNav = (id) => {
-                setMenuOpen(false);
-                const el = document.getElementById(id);
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-            };
+<!-- SLIDE 15: FEAF vs Zachman -->
+<div class="slide" data-index="15">
+  <div class="glow-orb" style="width:400px;height:400px;background:#00ffc4;bottom:-100px;right:-100px;animation-delay:5s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">05 — Харьцуулалт</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">FEAF vs Zachman</h2>
+    <div class="anim-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="card"><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-[#00332a] border border-[#00ffc4]/20 flex items-center justify-center"><span class="text-xs font-bold text-[#00ffc4]">FEAF</span></div><p class="text-sm font-semibold text-white">Хэрэгжүүлэх хэрэгсэл</p></div><ul class="space-y-2 text-xs text-neutral-400"><li class="flex items-start gap-2"><i data-lucide="check-circle" style="width:14px;height:14px;color:#00ffc4;flex-shrink:0;margin-top:1px"></i>Тодорхой (prescriptive)</li><li class="flex items-start gap-2"><i data-lucide="check-circle" style="width:14px;height:14px;color:#00ffc4;flex-shrink:0;margin-top:1px"></i>Дэлгэрэнгүй хэрэгжилтийн удирдамж</li><li class="flex items-start gap-2"><i data-lucide="check-circle" style="width:14px;height:14px;color:#00ffc4;flex-shrink:0;margin-top:1px"></i>5 Reference Model</li><li class="flex items-start gap-2"><i data-lucide="x-circle" style="width:14px;height:14px;color:#ef4444;flex-shrink:0;margin-top:1px"></i>Онолын гүн — дунд</li></ul></div>
+      <div class="card"><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-neutral-800 border border-white/10 flex items-center justify-center"><span class="text-xs font-bold text-neutral-300">Zach</span></div><p class="text-sm font-semibold text-white">Ойлгох хэрэгсэл</p></div><ul class="space-y-2 text-xs text-neutral-400"><li class="flex items-start gap-2"><i data-lucide="check-circle" style="width:14px;height:14px;color:#00ffc4;flex-shrink:0;margin-top:1px"></i>Тодорхойгүй (descriptive)</li><li class="flex items-start gap-2"><i data-lucide="check-circle" style="width:14px;height:14px;color:#00ffc4;flex-shrink:0;margin-top:1px"></i>6×6 матриц — иж бүрэн харагдац</li><li class="flex items-start gap-2"><i data-lucide="check-circle" style="width:14px;height:14px;color:#00ffc4;flex-shrink:0;margin-top:1px"></i>Объектын ангилалзүй</li><li class="flex items-start gap-2"><i data-lucide="x-circle" style="width:14px;height:14px;color:#ef4444;flex-shrink:0;margin-top:1px"></i>Хэрэгжилтийн удирдамж — хязгаарлагдмал</li></ul></div>
+    </div>
+    <div class="anim-4 mt-6 p-4 rounded-xl bg-neutral-900/50 border border-white/5"><p class="text-sm text-neutral-300"><em style="font-family:'Playfair Display';color:#00ffc4">Zachman</em> — "юуг харах" хэрэгсэл. <em style="font-family:'Playfair Display';color:#00ffc4">FEAF</em> — "юуг хийх" хэрэгсэл.</p></div>
+  </div>
+</div>
 
-            return (
-                <header className="nav-glass" style={{
-                    position: 'fixed', top: 0, left: 0, right: 0, zIndex: 80,
-                    boxShadow: scrolled ? 'var(--shadow)' : 'none',
-                }}>
-                    <nav className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-                        {/* Logo */}
-                        <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); }}
-                           className="font-mono font-bold text-lg" style={{ color: 'var(--accent)', textDecoration: 'none' }}>
-                            ~Kouji<span style={{ color: 'var(--text-muted)' }}>$</span>
-                        </a>
+<!-- SLIDE 16: Star Comparison -->
+<div class="slide" data-index="16">
+  <div class="glow-orb" style="width:400px;height:400px;background:#047857;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">05 — Нэгтгэсэн</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">Нэгтгэсэн Үнэлгээ</h2>
+    <div class="anim-3 overflow-hidden rounded-2xl border border-white/5">
+      <div class="grid grid-cols-4 text-xs font-bold uppercase tracking-wider"><div class="p-3 bg-neutral-900/80 text-neutral-500">Шалгуур</div><div class="p-3 bg-[#00332a]/50 text-[#00ffc4]">FEAF</div><div class="p-3 bg-neutral-900/80 text-neutral-300">TOGAF</div><div class="p-3 bg-neutral-900/80 text-neutral-300">Zachman</div></div>
+      <div class="divide-y divide-white/5 text-sm">
+        <div class="grid grid-cols-4"><div class="p-3 text-neutral-500 text-xs">Засгийн газар</div><div class="p-3">★★★★★</div><div class="p-3">★★★</div><div class="p-3">★★</div></div>
+        <div class="grid grid-cols-4"><div class="p-3 text-neutral-500 text-xs">Арилжааны</div><div class="p-3">★</div><div class="p-3">★★★★★</div><div class="p-3">★★★★</div></div>
+        <div class="grid grid-cols-4"><div class="p-3 text-neutral-500 text-xs">Аргачлал</div><div class="p-3">★★★★</div><div class="p-3">★★★★★</div><div class="p-3">★</div></div>
+        <div class="grid grid-cols-4"><div class="p-3 text-neutral-500 text-xs">Онолын гүн</div><div class="p-3">★★★</div><div class="p-3">★★★</div><div class="p-3">★★★★★</div></div>
+        <div class="grid grid-cols-4"><div class="p-3 text-neutral-500 text-xs">Уян хатан байдал</div><div class="p-3">★★</div><div class="p-3">★★★★</div><div class="p-3">★★★★</div></div>
+        <div class="grid grid-cols-4"><div class="p-3 text-neutral-500 text-xs">Засаглал</div><div class="p-3">★★★★★</div><div class="p-3">★★★</div><div class="p-3">★</div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-                        {/* Desktop Links */}
-                        <div className="hidden md:flex items-center gap-1">
-                            {NAV_LINKS.map(l => (
-                                <button key={l.id} onClick={() => handleNav(l.id)}
-                                    className="px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
-                                    style={{ color: 'var(--text-sec)', background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif" }}
-                                    onMouseEnter={e => e.target.style.color = 'var(--accent)'}
-                                    onMouseLeave={e => e.target.style.color = 'var(--text-sec)'}
-                                >{l.label}</button>
-                            ))}
-                            <button onClick={toggle}
-                                className="ml-3 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200"
-                                style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: 14 }}
-                                aria-label="Toggle theme"
-                            >
-                                <i className={`fa-solid ${dark ? 'fa-sun' : 'fa-moon'}`}></i>
-                            </button>
-                        </div>
+<!-- SLIDE 17: Advantages -->
+<div class="slide" data-index="17">
+  <div class="glow-orb" style="width:500px;height:500px;background:#00ffc4;top:-150px;left:-200px;animation-delay:2s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">06 — Давуу Тал</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-10">FEAF-ийн Давуу Талууд</h2>
+    <div class="anim-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="card flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-[#00332a] flex items-center justify-center flex-shrink-0"><i data-lucide="message-circle" style="width:18px;height:18px;color:#00ffc4"></i></div><div><p class="text-sm font-semibold text-white mb-1">Нэгдсэн хэл</p><p class="text-xs text-neutral-500">300+ агентлаг нэгдсэн ойлголтын хүрээнд ярилцана</p></div></div>
+      <div class="card flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-[#00332a] flex items-center justify-center flex-shrink-0"><i data-lucide="target" style="width:18px;height:18px;color:#00ffc4"></i></div><div><p class="text-sm font-semibold text-white mb-1">Хөрөнгө оруулалтын үнэлгээ</p><p class="text-xs text-neutral-500">PRM — бодит, хэмжигдэхүүнт хариулт өгнө</p></div></div>
+      <div class="card flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-[#00332a] flex items-center justify-center flex-shrink-0"><i data-lucide="layers" style="width:18px;height:18px;color:#00ffc4"></i></div><div><p class="text-sm font-semibold text-white mb-1">Давхардлыг арилгах</p><p class="text-xs text-neutral-500">BRM/SRM-ийн тусламжтай ижил системийг илрүүлнэ</p></div></div>
+      <div class="card flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-[#00332a] flex items-center justify-center flex-shrink-0"><i data-lucide="refresh-cw" style="width:18px;height:18px;color:#00ffc4"></i></div><div><p class="text-sm font-semibold text-white mb-1">Дахин ашиглалт</p><p class="text-xs text-neutral-500">Shared service концепц нэгдсэн шийдэл болгоно</p></div></div>
+      <div class="card flex items-start gap-4 md:col-span-2"><div class="w-10 h-10 rounded-full bg-[#00332a] flex items-center justify-center flex-shrink-0"><i data-lucide="shield-check" style="width:18px;height:18px;color:#00ffc4"></i></div><div><p class="text-sm font-semibold text-white mb-1">Хуулийн хүчинтэй засаглал</p><p class="text-xs text-neutral-500">Clinger-Cohen Act, OMB Circular A-130 — дагаж мөрдөх нь заавал</p></div></div>
+    </div>
+  </div>
+</div>
 
-                        {/* Mobile: theme toggle + hamburger */}
-                        <div className="flex md:hidden items-center gap-2">
-                            <button onClick={toggle}
-                                className="w-9 h-9 rounded-lg flex items-center justify-center"
-                                style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: 14 }}
-                                aria-label="Toggle theme"
-                            >
-                                <i className={`fa-solid ${dark ? 'fa-sun' : 'fa-moon'}`}></i>
-                            </button>
-                            <button onClick={() => setMenuOpen(true)}
-                                className="w-9 h-9 rounded-lg flex items-center justify-center"
-                                style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: 16 }}
-                                aria-label="Open menu"
-                            >
-                                <i className="fa-solid fa-bars"></i>
-                            </button>
-                        </div>
-                    </nav>
+<!-- SLIDE 18: Limitations -->
+<div class="slide" data-index="18">
+  <div class="glow-orb" style="width:500px;height:500px;background:#ef4444;top:-100px;right:-200px;animation-delay:3s;opacity:0.04"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag" style="color:#ef4444;background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.15)">06 — Сорилтууд</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-10">Хязгаарлалт ба Шүүмжлэл</h2>
+    <div class="anim-3 space-y-4">
+      <div class="card border-red-500/10"><p class="text-sm font-semibold text-white mb-1 flex items-center gap-2"><i data-lucide="file-stack" style="width:16px;height:16px;color:#ef4444"></i> "Хэт ачаалалтай" баримт бичгийн соёл</p><p class="text-xs text-neutral-500">GAO (2010): 22 агентлагийн 20 нь EA бүрэн баримтжуулсан ч тэр баримт бичгүүд бодит шийдвэрт ашиглагдаагүй</p></div>
+      <div class="card border-red-500/10"><p class="text-sm font-semibold text-white mb-1 flex items-center gap-2"><i data-lucide="hourglass" style="width:16px;height:16px;color:#ef4444"></i> Хэрэгжилтийн уян хатан байдал дутмаг</p><p class="text-xs text-neutral-500">Шуурхай өөрчлөлт шаарддаг нөхцөлд удаан, жижиг агентлагт хэт их дарамт</p></div>
+      <div class="card border-red-500/10"><p class="text-sm font-semibold text-white mb-1 flex items-center gap-2"><i data-lucide="user-x" style="width:16px;height:16px;color:#ef4444"></i> Мэргэжилтний дутагдал</p><p class="text-xs text-neutral-500">5 Reference Model-ийг бүгдийг гүнзгий мэддэг мэргэжилтэн цөөн, гэрэлтийн гэрээлэгч дээр хэт найддаг</p></div>
+      <div class="card border-red-500/10"><p class="text-sm font-semibold text-white mb-1 flex items-center gap-2"><i data-lucide="clipboard-check" style="width:16px;height:16px;color:#ef4444"></i> "Хожуулах" хандлага</p><p class="text-xs text-neutral-500">OMB-д тайлагнах зорилгоор л хэрэглэдэг — бодит удирдлагын хэрэгсэл биш болдог</p></div>
+      <div class="card border-red-500/10"><p class="text-sm font-semibold text-white mb-1 flex items-center gap-2"><i data-lucide="timer-off" style="width:16px;height:16px;color:#ef4444"></i> Өөрчлөлтийн удаан хурд</p><p class="text-xs text-neutral-500">Cloud 2010 онд тархаад FEAF шинэчлэлт 2017-2018 он хүртэл хүлээгдсэн</p></div>
+    </div>
+  </div>
+</div>
 
-                    {/* Mobile Menu Overlay */}
-                    <div className={`mobile-menu-overlay ${menuOpen ? 'open' : ''}`}>
-                        <button onClick={() => setMenuOpen(false)}
-                            style={{ position: 'absolute', top: 18, right: 20, background: 'none', border: 'none', color: 'var(--text)', fontSize: 24, cursor: 'pointer' }}
-                            aria-label="Close menu"
-                        >
-                            <i className="fa-solid fa-xmark"></i>
-                        </button>
-                        {NAV_LINKS.map(l => (
-                            <a key={l.id} href={`#${l.id}`} onClick={(e) => { e.preventDefault(); handleNav(l.id); }}>
-                                {l.label}
-                            </a>
-                        ))}
-                    </div>
-                </header>
-            );
-        }
+<!-- SLIDE 19: Interoperability -->
+<div class="slide" data-index="19">
+  <div class="glow-orb" style="width:500px;height:500px;background:#00ffc4;bottom:-200px;left:50%;animation-delay:1s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">07 — Нөлөө</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">Interoperability дахь Нөлөө</h2>
+    <div class="anim-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="card"><div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-red-500/5 flex items-center justify-center mb-4"><i data-lucide="alert-triangle" style="width:22px;height:22px;color:#ef4444"></i></div><p class="text-sm font-semibold text-white mb-2">Гамшгийн менежмент</p><p class="text-xs text-neutral-500 mb-3">Katrina (2005) — FEMA болон бусад агентлагийн мэдээлэл солилцоо доголдсон</p><p class="text-xs text-[#00ffc4]">→ NIEM стандарт боловсруулсан</p></div>
+      <div class="card"><div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center mb-4"><i data-lucide="heart-pulse" style="width:22px;height:22px;color:#3b82f6"></i></div><p class="text-sm font-semibold text-white mb-2">Эрүүл мэнд</p><p class="text-xs text-neutral-500 mb-3">HIE — эрүүл мэндийн мэдээлэл солилцооны сүлжээ</p><p class="text-xs text-[#00ffc4]">→ DRM + HL7 FHIR стандарт</p></div>
+      <div class="card"><div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-500/5 flex items-center justify-center mb-4"><i data-lucide="shield" style="width:22px;height:22px;color:#f59e0b"></i></div><p class="text-sm font-semibold text-white mb-2">Гааль, хилийн хяналт</p><p class="text-xs text-neutral-500 mb-3">DHS, CBP, State Dept хоорондын паспорт, виз мэдээлэл</p><p class="text-xs text-[#00ffc4]">→ SRM Shared Service загвар</p></div>
+    </div>
+    <div class="anim-4 mt-6 card"><p class="text-xs font-bold text-white uppercase tracking-wider mb-3">Стандартчилалд үзүүлсэн нөлөө</p><div class="flex flex-wrap gap-2"><span class="px-3 py-1.5 rounded-lg bg-neutral-800 border border-white/5 text-xs text-neutral-300">FedRAMP</span><span class="px-3 py-1.5 rounded-lg bg-neutral-800 border border-white/5 text-xs text-neutral-300">FICAM</span><span class="px-3 py-1.5 rounded-lg bg-neutral-800 border border-white/5 text-xs text-neutral-300">NIEM</span><span class="px-3 py-1.5 rounded-lg bg-neutral-800 border border-white/5 text-xs text-neutral-300">HL7 FHIR</span></div></div>
+  </div>
+</div>
 
-        // --- Hero ---
-        function Hero() {
-            const typed = useTypingEffect(TERMINAL_LINES, 26, 450);
-            const isDone = typed.length >= TERMINAL_LINES.length;
+<!-- SLIDE 20: Cloud & Modern -->
+<div class="slide" data-index="20">
+  <div class="glow-orb" style="width:500px;height:500px;background:#047857;top:-150px;right:-150px;animation-delay:2s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">08 — Орчин Үе</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">Cloud ба Modern Tech</h2>
+    <div class="anim-3 overflow-hidden rounded-2xl border border-white/5">
+      <div class="grid grid-cols-2 text-xs font-bold uppercase tracking-wider"><div class="p-3 bg-neutral-900/80 text-neutral-500">Хуучин хандлага</div><div class="p-3 bg-[#00332a]/50 text-[#00ffc4]">Cloud эрин үе</div></div>
+      <div class="divide-y divide-white/5 text-sm">
+        <div class="grid grid-cols-2"><div class="p-3 text-neutral-400 text-xs">On-premise голлосон</div><div class="p-3 text-neutral-200 text-xs">FedRAMP cloud-д шилжих</div></div>
+        <div class="grid grid-cols-2"><div class="p-3 text-neutral-400 text-xs">Монолит архитектур</div><div class="p-3 text-neutral-200 text-xs">Shared service, PaaS</div></div>
+        <div class="grid grid-cols-2"><div class="p-3 text-neutral-400 text-xs">TRM бүтээгдэхүүн нэрлэдэг</div><div class="p-3 text-neutral-200 text-xs">Стандарт, нийцтэй байдал голлодог</div></div>
+      </div>
+    </div>
+    <div class="anim-4 mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="card"><p class="text-xs font-bold text-green-400 mb-2">✓ Microservices-тэй нийцтэй</p><ul class="space-y-1 text-xs text-neutral-400"><li>• SRM "reuse" = "single responsibility"</li><li>• DRM стандартчилал = API-first суурь</li></ul></div>
+      <div class="card"><p class="text-xs font-bold text-red-400 mb-2">✗ Зөрчилдөөн</p><ul class="space-y-1 text-xs text-neutral-400"><li>• FEAF хяналт удаан — CI/CD хурдтай биш</li><li>• Баримт бичгийн шаардлага agile sprint-тэй зөрчилддөг</li></ul></div>
+    </div>
+    <div class="anim-5 mt-4 p-4 rounded-xl bg-[#00332a] border border-[#00ffc4]/20"><p class="text-sm text-[#00ffc4]">Шийдэл: Орчин үеийн агентлагууд <strong>"lightweight FEAF"</strong> буюу хялбаршуулсан архитектурын шалгалтын процессыг нэвтрүүлж байна.</p></div>
+  </div>
+</div>
 
-            return (
-                <section className="relative min-h-screen flex items-center pt-16 bg-grid overflow-hidden">
-                    {/* Decorative glows */}
-                    <div className="accent-glow" style={{ width: 500, height: 500, top: '10%', left: '-10%', opacity: 0.5 }} />
-                    <div className="accent-glow" style={{ width: 350, height: 350, bottom: '5%', right: '-5%', opacity: 0.3 }} />
+<!-- SLIDE 21: AI & Data -->
+<div class="slide" data-index="21">
+  <div class="glow-orb" style="width:500px;height:500px;background:#00ffc4;bottom:-200px;left:-200px;animation-delay:4s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">08 — AI & Өгөгдөл</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">AI ба Өгөгдлийн Засаглал</h2>
+    <div class="anim-3 grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="card text-center py-6"><i data-lucide="brain" style="width:28px;height:28px;color:#00ffc4;margin:0 auto 12px"></i><p class="text-sm font-semibold text-white mb-1">AI Засаглал</p><p class="text-[11px] text-neutral-500">EO 14110 (2023)<br>AI загварын аюулгүй байдал</p></div>
+      <div class="card text-center py-6"><i data-lucide="database" style="width:28px;height:28px;color:#00ffc4;margin:0 auto 12px"></i><p class="text-sm font-semibold text-white mb-1">Өгөгдлийн Стратеги</p><p class="text-[11px] text-neutral-500">Federal Data Strategy<br>CDMC</p></div>
+      <div class="card text-center py-6"><i data-lucide="shield-check" style="width:28px;height:28px;color:#00ffc4;margin:0 auto 12px"></i><p class="text-sm font-semibold text-white mb-1">Zero Trust</p><p class="text-[11px] text-neutral-500">NIST SP 800-207<br>Built-in security</p></div>
+    </div>
+    <div class="anim-4 card border-amber-500/10"><p class="text-sm font-semibold text-amber-400 mb-2 flex items-center gap-2"><i data-lucide="alert-triangle" style="width:16px;height:16px"></i> Ирээдүйн сорилт</p><p class="text-xs text-neutral-400">FEAF-ийн одоогийн DRM нь дараах зүйлсийг бүрэн хамраагүй байна:</p><div class="flex flex-wrap gap-2 mt-3"><span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300">Model Governance</span><span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300">Explainability</span><span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300">Data Fairness</span><span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300">AI Data Lineage</span></div></div>
+  </div>
+</div>
 
-                    <div className="max-w-6xl mx-auto px-5 py-20 w-full">
-                        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                            {/* Terminal */}
-                            <div className="relative reveal" style={{ animation: 'fadeInUp 0.8s ease forwards' }}>
-                                <div className="terminal relative">
-                                    <div className="terminal-scanlines"></div>
-                                    <div className="terminal-bar">
-                                        <div className="terminal-dot" style={{ background: '#ff5f57' }}></div>
-                                        <div className="terminal-dot" style={{ background: '#febc2e' }}></div>
-                                        <div className="terminal-dot" style={{ background: '#28c840' }}></div>
-                                        <span className="ml-3 text-xs font-mono" style={{ color: 'var(--terminal-text)', opacity: 0.5 }}>otgonbayar@server:~</span>
-                                    </div>
-                                    <div className="terminal-body">
-                                        {typed.map((line, i) => (
-                                            <div key={i}>
-                                                {line.type === 'cmd' ? (
-                                                    <><span className="prompt">{'>'}</span> <span className="cmd">{line.text}</span></>
-                                                ) : (
-                                                    <span className="output">{line.text}</span>
-                                                )}
-                                            </div>
-                                        ))}
-                                        {isDone && <span className="cursor-blink"></span>}
-                                    </div>
-                                </div>
-                                {/* Floating decoration */}
-                                <div style={{
-                                    position: 'absolute', top: -12, right: -12, width: 50, height: 50,
-                                    borderRadius: 10, border: '1px dashed var(--accent)', opacity: 0.25,
-                                    animation: 'float 4s ease-in-out infinite',
-                                }}></div>
-                                <div style={{
-                                    position: 'absolute', bottom: -8, left: -8, width: 36, height: 36,
-                                    borderRadius: 8, border: '1px dashed var(--accent)', opacity: 0.2,
-                                    animation: 'float 5s ease-in-out infinite 1s',
-                                }}></div>
-                            </div>
+<!-- SLIDE 22: Fundamental Tensions -->
+<div class="slide" data-index="22">
+  <div class="glow-orb" style="width:400px;height:400px;background:#ef4444;top:50%;right:-100px;animation-delay:3s;opacity:0.05"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag" style="color:#ef4444;background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.15)">09 — Шүүмжлэл</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-10">Гурван Суурь Зөрчил</h2>
+    <div class="anim-3 space-y-5">
+      <div class="card border-l-2 border-l-red-500"><p class="text-sm font-semibold text-white mb-2">Зөрчил 1: Нэгдсэн байдал vs. Байгууллагын онцлог</p><p class="text-xs text-neutral-400 mb-3">DoD, HHS, NASA зэрэг огт өөр мөн чанартай байгууллагуудад нэг загвар тулгах нь зайлшгүй алдагдалд хүргэнэ.</p><p class="text-xs text-neutral-600 italic">DoD нь FEAF-ийг хэрэглэх үүрэгтэй боловч өөрийн DODAF-ийг зэрэгцүүлэн хэрэглэдэг — FEAF-ийн хамрах чадвар хязгаарлагдмалын тусгал.</p></div>
+      <div class="card border-l-2 border-l-amber-500"><p class="text-sm font-semibold text-white mb-2">Зөрчил 2: Урт хугацааны төлөвлөлт vs. Технологийн хурд</p><p class="text-xs text-neutral-400">"5 жилийн технологийн чиглэл" тодорхойлох шаардлага — технологи 18 сарт эрс өөрчлөгддөг орчинд статик баримт бичиг болох нь.</p></div>
+      <div class="card border-l-2 border-l-purple-500"><p class="text-sm font-semibold text-white mb-2">Зөрчил 3: Засаглал vs. Инновацийн чадвар</p><p class="text-xs text-neutral-400">Нягт засаглалын механизм (ARB, OMB тайлан) шинэ технологи нэвтрүүлэхэд зохицуулалтын саад болдог.</p></div>
+    </div>
+  </div>
+</div>
 
-                            {/* Info */}
-                            <div>
-                                <p className="font-mono text-sm mb-4" style={{ color: 'var(--accent)', animation: 'fadeInUp 0.8s ease 0.2s both' }}>
-                                    <i className="fa-solid fa-terminal" style={{ marginRight: 6 }}></i> Hello, World
-                                </p>
-                                <h1 className="font-bold leading-tight mb-4"
-                                    style={{ fontSize: 'clamp(32px, 5vw, 52px)', color: 'var(--text)', animation: 'fadeInUp 0.8s ease 0.3s both' }}>
-                                    Otgonbayar<br/>
-                                    <span style={{ color: 'var(--accent)' }}>Enkhbold</span>
-                                </h1>
-                                <p className="text-lg mb-3" style={{ color: 'var(--text-sec)', animation: 'fadeInUp 0.8s ease 0.4s both' }}>
-                                    Information Systems Student / Aspiring System Engineer
-                                </p>
-                                <p className="flex items-center gap-2 text-sm mb-8" style={{ color: 'var(--text-muted)', animation: 'fadeInUp 0.8s ease 0.45s both' }}>
-                                    <i className="fa-solid fa-location-dot"></i> Ulaanbaatar, Mongolia
-                                </p>
-                                <div className="flex flex-wrap gap-4" style={{ animation: 'fadeInUp 0.8s ease 0.5s both' }}>
-                                    <button className="btn-primary" onClick={() => document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
-                                        <i className="fa-solid fa-rocket"></i> View Projects
-                                    </button>
-                                    <button className="btn-outline" onClick={() => document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
-                                        <i className="fa-solid fa-envelope"></i> Get in Touch
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+<!-- SLIDE 23: Future & Conclusion -->
+<div class="slide" data-index="23">
+  <div class="glow-orb" style="width:600px;height:600px;background:#00ffc4;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1s"></div>
+  <div class="max-w-4xl">
+    <div class="anim-1 mb-4"><span class="tag">09 — Дүгнэлт</span></div>
+    <h2 class="anim-2 text-3xl md:text-5xl font-semibold tracking-tight leading-tight mb-8">Ирээдүй ба Дүгнэлт</h2>
+    <div class="anim-3 grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div>
+        <p class="text-xs font-bold text-[#00ffc4] uppercase tracking-wider mb-4">Хөгжих чиглэл</p>
+        <div class="space-y-3">
+          <div class="card flex items-start gap-3 py-3"><span class="text-sm font-bold text-[#00ffc4]">01</span><p class="text-xs text-neutral-300">Agile-д нийцсэн "rolling architecture review"</p></div>
+          <div class="card flex items-start gap-3 py-3"><span class="text-sm font-bold text-[#00ffc4]">02</span><p class="text-xs text-neutral-300">AI/ML засаглалын DRM-д нэгтгэл</p></div>
+          <div class="card flex items-start gap-3 py-3"><span class="text-sm font-bold text-[#00ffc4]">03</span><p class="text-xs text-neutral-300">Zero Trust-тай гүнзгий уялдаа</p></div>
+          <div class="card flex items-start gap-3 py-3"><span class="text-sm font-bold text-[#00ffc4]">04</span><p class="text-xs text-neutral-300">Жижиг байгууллагад "lite" хувилбар</p></div>
+          <div class="card flex items-start gap-3 py-3"><span class="text-sm font-bold text-[#00ffc4]">05</span><p class="text-xs text-neutral-300">DRM 2.0 — Data mesh, data fabric</p></div>
+        </div>
+      </div>
+      <div>
+        <p class="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-4">Реал дүр зураг</p>
+        <div class="card space-y-4 py-5">
+          <div><div class="flex justify-between text-xs mb-1"><span class="text-neutral-400">Идэвхтэй ашигладаг</span><span class="text-[#00ffc4] font-bold">~30-40%</span></div><div class="w-full h-2 rounded-full bg-neutral-800"><div class="h-2 rounded-full bg-gradient-to-r from-[#047857] to-[#00ffc4]" style="width:35%"></div></div></div>
+          <div><div class="flex justify-between text-xs mb-1"><span class="text-neutral-400">Тайлагнах зорилгоор</span><span class="text-neutral-500 font-bold">~60-70%</span></div><div class="w-full h-2 rounded-full bg-neutral-800"><div class="h-2 rounded-full bg-neutral-600" style="width:65%"></div></div></div>
+          <p class="text-[11px] text-neutral-600 pt-2 border-t border-white/5">Эх сурвалж: GAO тайлангууд, олон улсын судалгаа</p>
+        </div>
+        <div class="card mt-4 p-5 text-center" style="background:linear-gradient(to bottom right, rgba(0,255,196,0.05), transparent)"><p class="text-xs text-neutral-500 italic mb-2">"Architecture for architecture's sake"</p><p class="text-[11px] text-neutral-600">— хамгийн том эрсдэл</p></div>
+      </div>
+    </div>
+    <div class="anim-4 text-center"><p class="text-neutral-500 text-sm">Ашигласан материал: <span class="text-neutral-400">OMB, GAO, CIO Council, NIST, The Open Group</span></p></div>
+  </div>
+</div>
 
-                        {/* Scroll indicator */}
-                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2" style={{ animation: 'float 2.5s ease-in-out infinite' }}>
-                            <i className="fa-solid fa-chevron-down text-sm" style={{ color: 'var(--text-muted)' }}></i>
-                        </div>
-                    </div>
-                </section>
-            );
-        }
+<!-- ======================== SCRIPTS ======================== -->
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  let currentSlide = 0;
+  let isAnimating = false;
+  const ANIM_DURATION = 500;
 
-        // --- About ---
-        function About() {
-            return (
-                <section id="about" className="py-24 relative">
-                    <div className="max-w-6xl mx-auto px-5">
-                        <div className="reveal">
-                            <p className="section-label">// About Me</p>
-                            <h2 className="section-title mb-6">Building the infrastructure<br/>that powers the web.</h2>
-                        </div>
+  // Build mini TOC
+  const miniToc = document.getElementById('miniToc');
+  slides.forEach(function(_, i) {
+    var dot = document.createElement('div');
+    dot.className = 'mini-toc-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', function() { goToSlide(i); });
+    miniToc.appendChild(dot);
+  });
 
-                        <div className="grid lg:grid-cols-5 gap-10">
-                            {/* Bio text */}
-                            <div className="lg:col-span-3 reveal reveal-delay-1">
-                                <p className="text-base leading-relaxed mb-5" style={{ color: 'var(--text-sec)' }}>
-                                    I'm a third-year Information Systems student with a deep focus on what happens beneath the application layer — the servers, the configurations, the security rules that keep systems running reliably.
-                                </p>
-                                <p className="text-base leading-relaxed mb-5" style={{ color: 'var(--text-sec)' }}>
-                                    My hands-on experience spans setting up cloud virtual machines, configuring Nginx web servers, hardening Linux systems, and implementing basic containerization with Docker. I've deployed real projects to production environments with proper HTTPS, SSH key authentication, and firewall configurations.
-                                </p>
-                                <p className="text-base leading-relaxed mb-8" style={{ color: 'var(--text-sec)' }}>
-                                    Beyond infrastructure, I build full-stack applications using React, Node.js, and MongoDB, and I maintain a strong foundation in data structures and algorithmic problem solving with C++ and Python.
-                                </p>
+  function updateUI() {
+    document.getElementById('slideNumber').textContent =
+      String(currentSlide + 1).padStart(2, '0') + ' / ' + String(totalSlides).padStart(2, '0');
+    document.getElementById('progressBar').style.width =
+      ((currentSlide + 1) / totalSlides * 100) + '%';
 
-                                {/* Goals */}
-                                <div style={{ padding: '18px 22px', borderRadius: 10, background: 'var(--accent-soft)', borderLeft: '3px solid var(--accent)' }}>
-                                    <p className="font-mono text-xs mb-2" style={{ color: 'var(--accent)' }}>GOALS</p>
-                                    <p className="text-sm" style={{ color: 'var(--text-sec)' }}>
-                                        Become a system engineer / cloud engineer. Build scalable and secure infrastructure. Deepen knowledge in distributed systems and cloud-native architectures.
-                                    </p>
-                                </div>
-                            </div>
+    var dots = document.querySelectorAll('.mini-toc-dot');
+    for (var i = 0; i < dots.length; i++) {
+      if (i === currentSlide) dots[i].classList.add('active');
+      else dots[i].classList.remove('active');
+    }
 
-                            {/* Highlight cards */}
-                            <div className="lg:col-span-2 grid grid-cols-2 gap-4">
-                                {HIGHLIGHTS.map((h, i) => (
-                                    <div key={i} className={`highlight-card reveal reveal-delay-${i + 1}`}>
-                                        <div className="highlight-icon">
-                                            <i className={`fa-solid ${h.icon}`}></i>
-                                        </div>
-                                        <p className="font-semibold text-sm mb-1" style={{ color: 'var(--text)' }}>{h.title}</p>
-                                        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{h.desc}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            );
-        }
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    if (currentSlide === 0) prevBtn.classList.add('disabled');
+    else prevBtn.classList.remove('disabled');
+    if (currentSlide === totalSlides - 1) nextBtn.classList.add('disabled');
+    else nextBtn.classList.remove('disabled');
+  }
 
-        // --- Skills ---
-        function Skills() {
-            const [tab, setTab] = useState('dev');
-            useScrollReveal();
+  function goToSlide(index) {
+    if (isAnimating || index === currentSlide || index < 0 || index >= totalSlides) return;
+    isAnimating = true;
 
-            return (
-                <section id="skills" className="py-24 relative" style={{ background: 'var(--bg-alt)', transition: 'background 0.35s' }}>
-                    <div className="max-w-6xl mx-auto px-5">
-                        <div className="reveal">
-                            <p className="section-label">// Skills</p>
-                            <h2 className="section-title mb-8">Technical toolkit.</h2>
-                        </div>
+    var oldSlide = slides[currentSlide];
+    var newSlide = slides[index];
+    var goingForward = index > currentSlide;
+    var exitX = goingForward ? '-60px' : '60px';
+    var enterFrom = goingForward ? '60px' : '-60px';
 
-                        {/* Tabs */}
-                        <div className="flex gap-3 mb-10 reveal reveal-delay-1">
-                            <button className={`tab-btn ${tab === 'dev' ? 'active' : ''}`} onClick={() => setTab('dev')}>
-                                <i className="fa-solid fa-code" style={{ marginRight: 6 }}></i> Development
-                            </button>
-                            <button className={`tab-btn ${tab === 'ops' ? 'active' : ''}`} onClick={() => setTab('ops')}>
-                                <i className="fa-solid fa-server" style={{ marginRight: 6 }}></i> System / DevOps
-                            </button>
-                        </div>
+    // Step 1: Remove visibility from old slide instantly (no animation)
+    oldSlide.classList.remove('visible');
+    oldSlide.style.transition = 'none';
+    oldSlide.style.opacity = '0';
 
-                        {/* Dev Skills Grid */}
-                        {tab === 'dev' && (
-                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                {DEV_SKILLS.map((s, i) => (
-                                    <div key={s.name} className="skill-card reveal reveal-delay-(Math.min(i%3+1, 4))" style={{ transitionDelay: `${(i % 3) * 0.06}s` }}>
-                                        <div className="skill-icon"><i className={s.icon}></i></div>
-                                        <div>
-                                            <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>{s.name}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+    // Step 2: Animate old slide out (from center to exit position)
+    // Force reflow so the browser registers the starting state
+    void oldSlide.offsetHeight;
 
-                        {/* DevOps Skills Grid */}
-                        {tab === 'ops' && (
-                            <div className="grid sm:grid-cols-2 gap-3">
-                                {DEVOPS_SKILLS.map((s, i) => (
-                                    <div key={s.name} className="skill-card reveal" style={{ transitionDelay: `${(i % 2) * 0.08}s`, flexDirection: 'column', alignItems: 'flex-start', gap: 10, padding: '20px' }}>
-                                        <div className="flex items-center gap-3 w-full">
-                                            <div className="skill-icon"><i className={s.icon}></i></div>
-                                            <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>{s.name}</p>
-                                        </div>
-                                        <p className="text-xs pl-[52px]" style={{ color: 'var(--text-muted)' }}>{s.desc}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </section>
-            );
-        }
+    oldSlide.style.transition = 'opacity ' + (ANIM_DURATION * 0.7) + 'ms ease, transform ' + (ANIM_DURATION * 0.7) + 'ms ease';
+    oldSlide.style.transform = 'translateX(' + exitX + ')';
 
-        // --- Projects ---
-        function Projects() {
-            useScrollReveal();
-            return (
-                <section id="projects" className="py-24 relative">
-                    <div className="max-w-6xl mx-auto px-5">
-                        <div className="reveal">
-                            <p className="section-label">// Projects</p>
-                            <h2 className="section-title mb-10">What I've built.</h2>
-                        </div>
+    // Step 3: Prepare new slide off-screen
+    newSlide.style.transition = 'none';
+    newSlide.style.transform = 'translateX(' + enterFrom + ')';
+    newSlide.style.opacity = '0';
+    newSlide.classList.add('visible');
+    newSlide.style.pointerEvents = 'auto';
 
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {PROJECTS.map((p, i) => (
-                                <div key={i} className={`card project-card p-6 reveal reveal-delay-${Math.min(i + 1, 3)}`}>
-                                    <div className="flex flex-wrap gap-2 mb-4">
-                                        {p.stack.map(t => <span key={t} className="tag">{t}</span>)}
-                                    </div>
-                                    <h3 className="font-bold text-lg mb-3" style={{ color: 'var(--text)' }}>{p.title}</h3>
-                                    <p className="text-sm mb-5 leading-relaxed" style={{ color: 'var(--text-sec)' }}>{p.desc}</p>
-                                    <ul className="space-y-2">
-                                        {p.points.map((pt, j) => (
-                                            <li key={j} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                                                <i className="fa-solid fa-check mt-0.5" style={{ color: 'var(--accent)', fontSize: 10 }}></i>
-                                                {pt}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            );
-        }
+    // Force reflow
+    void newSlide.offsetHeight;
 
-        // --- Experience ---
-        function Experience() {
-            useScrollReveal();
-            return (
-                <section id="experience" className="py-24 relative" style={{ background: 'var(--bg-alt)', transition: 'background 0.35s' }}>
-                    <div className="max-w-6xl mx-auto px-5">
-                        <div className="reveal">
-                            <p className="section-label">// Experience</p>
-                            <h2 className="section-title mb-10">System engineering work.</h2>
-                        </div>
+    // Step 4: Animate new slide in
+    newSlide.style.transition = 'opacity ' + ANIM_DURATION + 'ms ease, transform ' + ANIM_DURATION + 'ms ease';
+    newSlide.style.transform = 'translateX(0)';
+    newSlide.style.opacity = '1';
 
-                        <div className="relative max-w-2xl" style={{ paddingLeft: 42 }}>
-                            {/* Vertical line */}
-                            <div className="timeline-line"></div>
+    currentSlide = index;
+    updateUI();
 
-                            {EXPERIENCES.map((exp, i) => (
-                                <div key={i} className="timeline-item relative mb-12 last:mb-0 reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
-                                    <div className="timeline-dot"></div>
-                                    <div className="card p-5" style={{ marginLeft: 12 }}>
-                                        <h3 className="font-bold text-base mb-2" style={{ color: 'var(--text)' }}>{exp.title}</h3>
-                                        <p className="text-sm mb-4 leading-relaxed" style={{ color: 'var(--text-sec)' }}>{exp.desc}</p>
-                                        <div className="flex flex-wrap gap-2">
-                                            {exp.tags.map(t => <span key={t} className="tag">{t}</span>)}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            );
-        }
+    // Step 5: Cleanup after animation
+    setTimeout(function() {
+      oldSlide.style.transition = '';
+      oldSlide.style.transform = '';
+      oldSlide.style.opacity = '';
+      oldSlide.style.pointerEvents = '';
+      isAnimating = false;
+    }, ANIM_DURATION + 50);
+  }
 
-        // --- Contact ---
-        function Contact() {
-            const { toast, show: showToast } = useToast();
-            const [form, setForm] = useState({ name: '', email: '', message: '' });
-            const [errors, setErrors] = useState({});
+  function navigate(dir) {
+    goToSlide(currentSlide + dir);
+  }
 
-            useScrollReveal();
+  // Keyboard
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault();
+      navigate(1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      navigate(-1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      goToSlide(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      goToSlide(totalSlides - 1);
+    }
+  });
 
-            const validate = () => {
-                const errs = {};
-                if (!form.name.trim()) errs.name = 'Name is required';
-                if (!form.email.trim()) errs.email = 'Email is required';
-                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Invalid email format';
-                if (!form.message.trim()) errs.message = 'Message is required';
-                return errs;
-            };
+  // Touch swipe
+  var touchStartX = 0;
+  var touchStartY = 0;
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].screenX - touchStartX;
+    var dy = e.changedTouches[0].screenY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      navigate(dx < 0 ? 1 : -1);
+    }
+  }, { passive: true });
 
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                const errs = validate();
-                setErrors(errs);
-                if (Object.keys(errs).length > 0) {
-                    showToast('Please fill in all fields correctly', 'error');
-                    return;
-                }
-                showToast('Message sent successfully! (demo)');
-                setForm({ name: '', email: '', message: '' });
-                setErrors({});
-            };
+  // Mouse wheel — debounce
+  var wheelLock = false;
+  document.addEventListener('wheel', function(e) {
+    if (wheelLock) return;
+    wheelLock = true;
+    setTimeout(function() { wheelLock = false; }, 900);
+    if (Math.abs(e.deltaY) > 30) {
+      navigate(e.deltaY > 0 ? 1 : -1);
+    }
+  }, { passive: true });
 
-            const handleChange = (field) => (e) => {
-                setForm(prev => ({ ...prev, [field]: e.target.value }));
-                if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }));
-            };
-
-            const socialLinks = [
-                { icon: 'fa-brands fa-github', label: 'GitHub', href: '#' },
-                { icon: 'fa-brands fa-linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/otgonbayar-enkhbold-134222269/' },
-                { icon: 'fa-solid fa-envelope', label: 'Email', href: 'mailto:ogoo0624@gmail.com' },
-            ];
-
-            return (
-                <section id="contact" className="py-24 relative">
-                    <div className="max-w-6xl mx-auto px-5">
-                        <div className="reveal">
-                            <p className="section-label">// Contact</p>
-                            <h2 className="section-title mb-4">Let's connect.</h2>
-                            <p className="text-base mb-10" style={{ color: 'var(--text-sec)', maxWidth: 520 }}>
-                                Interested in system engineering, infrastructure projects, or just want to say hello? I'm always open to conversations and opportunities.
-                            </p>
-                        </div>
-
-                        <div className="grid md:grid-cols-5 gap-10">
-                            {/* Form */}
-                            <form onSubmit={handleSubmit} className="md:col-span-3 space-y-5 reveal reveal-delay-1" noValidate>
-                                <div>
-                                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>Name</label>
-                                    <input type="text" className="form-input" placeholder="Your name" value={form.name} onChange={handleChange('name')} />
-                                    {errors.name && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.name}</p>}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>Email</label>
-                                    <input type="email" className="form-input" placeholder="you@example.com" value={form.email} onChange={handleChange('email')} />
-                                    {errors.email && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.email}</p>}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>Message</label>
-                                    <textarea className="form-input" rows="5" placeholder="Write your message..." value={form.message} onChange={handleChange('message')} style={{ resize: 'vertical' }}></textarea>
-                                    {errors.message && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.message}</p>}
-                                </div>
-                                <button type="submit" className="btn-primary">
-                                    <i className="fa-solid fa-paper-plane"></i> Send Message
-                                </button>
-                            </form>
-
-                            {/* Social */}
-                            <div className="md:col-span-2 reveal reveal-delay-2">
-                                <div className="card p-6 space-y-5">
-                                    <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>Find me online</p>
-                                    {socialLinks.map(link => (
-                                        <a key={link.label} href={link.href}
-                                            className="flex items-center gap-4 p-3 rounded-lg transition-all duration-200 group"
-                                            style={{ color: 'var(--text-sec)', textDecoration: 'none' }}
-                                            onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-soft)'; e.currentTarget.style.color = 'var(--accent)'; }}
-                                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-sec)'; }}
-                                        >
-                                            <div className="skill-icon" style={{ width: 36, height: 36, fontSize: 15 }}>
-                                                <i className={link.icon}></i>
-                                            </div>
-                                            <span className="text-sm font-medium">{link.label}</span>
-                                            <i className="fa-solid fa-arrow-right text-xs ml-auto opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--accent)' }}></i>
-                                        </a>
-                                    ))}
-
-                                    <div style={{ marginTop: 20, paddingTop: 20, borderTop: '1px solid var(--border)' }}>
-                                        <p className="font-mono text-xs mb-2" style={{ color: 'var(--text-muted)' }}>EDUCATION</p>
-                                        <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>Bachelor's in Information Systems</p>
-                                        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>3rd Year &mdash; National University of Mongolia</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <Toast data={toast} />
-                </section>
-            );
-        }
-
-        // --- Footer ---
-        function Footer() {
-            return (
-                <footer style={{ borderTop: '1px solid var(--border)', background: 'var(--bg-alt)', transition: 'background 0.35s, border-color 0.35s' }}>
-                    <div className="max-w-6xl mx-auto px-5 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <p className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
-                            &copy; {new Date().getFullYear()} Otgonbayar Enkhbold
-                        </p>
-                        <p className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
-                            Designed & built with <span style={{ color: 'var(--accent)' }}>&lt;dev /&gt;</span>
-                        </p>
-                    </div>
-                </footer>
-            );
-        }
-
-        /* ===================================================
-           App Root
-        =================================================== */
-        function App() {
-            const progress = useScrollProgress();
-            const showTop = useScrollTop(400);
-            useScrollReveal();
-
-            return (
-                <ThemeProvider>
-                    <ScrollProgressBar progress={progress} />
-                    <ScrollToTop visible={showTop} />
-                    <Navbar />
-                    <main>
-                        <Hero />
-                        <About />
-                        <Skills />
-                        <Projects />
-                        <Experience />
-                        <Contact />
-                    </main>
-                    <Footer />
-                </ThemeProvider>
-            );
-        }
-
-        /* ===================================================
-           Mount
-        =================================================== */
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+  // Initialize first slide
+  slides[0].classList.add('visible');
+  slides[0].style.opacity = '1';
+  slides[0].style.transform = 'translateX(0)';
+  slides[0].style.pointerEvents = 'auto';
+  updateUI();
+  lucide.createIcons();
+</script>
 </body>
-</html>in
+</html>
