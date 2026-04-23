@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css"/>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23090c0a'/><text y='55' x='50' text-anchor='middle' font-size='52' font-family='monospace' fill='%2300e676'>%3E_</text></svg>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
 
     <script>
         tailwind.config = {
@@ -233,13 +234,20 @@
             width: 38px; height: 38px; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
             background: var(--accent-soft);
-            color: var(--accent);
-            font-size: 16px; flex-shrink: 0;
+            /* color: var(--accent); */
+            font-size: 22px; flex-shrink: 0;
             transition: background 0.3s, color 0.3s;
         }
-        .skill-card:hover .skill-icon {
+        /* .skill-card:hover .skill-icon {
             background: var(--accent);
             color: var(--accent-text);
+        } */
+         .skill-card:hover .skill-icon {
+            background: var(--accent);
+        }
+
+        .skill-card:hover .skill-icon i {
+            filter: brightness(0) invert(1); /* makes icons white on hover */
         }
 
         /* ===== Project Card ===== */
@@ -443,33 +451,54 @@
             { icon: 'fa-server', title: 'Systems & DevOps', desc: 'Nginx, Docker, Linux' },
             { icon: 'fa-code', title: 'Full-Stack Dev', desc: 'React, Node.js, MongoDB' },
         ];
-
-       const DEV_SKILLS = [
-            { name: 'HTML',            icon: 'fa-brands fa-html5',    level: 85, years: 3 },
-            { name: 'CSS',             icon: 'fa-brands fa-css3-alt', level: 80, years: 3 },
-            { name: 'JavaScript',      icon: 'fa-brands fa-js',       level: 65, years: 2 },
-            { name: 'React',           icon: 'fa-brands fa-react',    level: 60, years: 2 },
-            { name: 'Node.js',         icon: 'fa-brands fa-node-js',  level: 58, years: 2 },
-            { name: 'Express.js',      icon: 'fa-solid fa-bolt',      level: 55, years: 2 },
-            { name: 'MongoDB',         icon: 'fa-solid fa-database',  level: 50, years: 1 },
-            { name: 'C++',             icon: 'fa-solid fa-microchip', level: 55, years: 2 },
-            { name: 'C#',              icon: 'fa-solid fa-code',      level: 52, years: 1 },
-            { name: 'Python',          icon: 'fa-brands fa-python',   level: 48, years: 1 },
-            { name: 'Data Structures', icon: 'fa-solid fa-sitemap',   level: 62, years: 2 },
+        //     Favicon icons
+        //    const DEV_SKILLS = [
+        //         { name: 'HTML',            icon: 'fa-brands fa-html5',    level: 85, years: 3 },
+        //         { name: 'CSS',             icon: 'fa-brands fa-css3-alt', level: 80, years: 3 },
+        //         { name: 'JavaScript',      icon: 'fa-brands fa-js',       level: 65, years: 2 },
+        //         { name: 'React',           icon: 'fa-brands fa-react',    level: 60, years: 2 },
+        //         { name: 'Node.js',         icon: 'fa-brands fa-node-js',  level: 58, years: 2 },
+        //         { name: 'Express.js',      icon: 'fa-solid fa-bolt',      level: 55, years: 2 },
+        //         { name: 'MongoDB',         icon: 'fa-solid fa-database',  level: 50, years: 1 },
+        //         { name: 'C++',             icon: 'fa-solid fa-microchip', level: 55, years: 2 },
+        //         { name: 'C#',              icon: 'fa-solid fa-code',      level: 52, years: 1 },
+        //         { name: 'Python',          icon: 'fa-brands fa-python',   level: 48, years: 1 },
+        //     ];
+        const DEV_SKILLS = [
+            { name: 'HTML',            icon: 'devicon-html5-plain colored',        level: 85, years: 3 },
+            { name: 'CSS',             icon: 'devicon-css3-plain colored',         level: 80, years: 3 },
+            { name: 'JavaScript',      icon: 'devicon-javascript-plain colored',   level: 65, years: 2 },
+            { name: 'React',           icon: 'devicon-react-original colored',     level: 60, years: 2 },
+            { name: 'Node.js',         icon: 'devicon-nodejs-plain colored',       level: 58, years: 2 },
+            { name: 'Express.js',      icon: 'devicon-express-original',           level: 55, years: 2 },
+            { name: 'MongoDB',         icon: 'devicon-mongodb-plain colored',      level: 50, years: 1 },
+            { name: 'C++',             icon: 'devicon-cplusplus-plain colored',    level: 55, years: 2 },
+            { name: 'C#',              icon: 'devicon-csharp-plain colored',       level: 52, years: 1 },
+            { name: 'Python',          icon: 'devicon-python-plain colored',       level: 48, years: 1 },
         ];
-
+        // Favicon Icons
+        // const DEVOPS_SKILLS = [
+        //     { name: 'Linux',           icon: 'fa-brands fa-linux',        level: 72, years: 2, desc: 'User management, permissions, SSH' },
+        //     { name: 'Openstack',       icon: 'fa-solid fa-cloud',         level: 70, years: 2, desc: 'Cloud platform instance management' },
+        //     { name: 'Nginx',           icon: 'fa-solid fa-globe',         level: 65, years: 2, desc: 'Web server configuration & reverse proxy' },
+        //     { name: 'Server Security', icon: 'fa-solid fa-shield-halved', level: 63, years: 2, desc: 'SSH keys, root disable, hardening' },
+        //     { name: 'Monitoring',      icon: 'fa-solid fa-chart-line',    level: 60, years: 1, desc: 'Prometheus, Grafana, alerting' },
+        //     { name: 'Networking',      icon: 'fa-solid fa-network-wired', level: 58, years: 2, desc: 'TCP/IP, DNS, firewall rules' },
+        //     { name: 'Docker',          icon: 'fa-brands fa-docker',       level: 50, years: 1, desc: 'Containerization basics' },
+        //     { name: 'Kubernetes',      icon: 'fa-solid fa-dharmachakra',  level: 42, years: 1, desc: 'Cloud Native Associate level' },
+        //     { name: 'CI/CD',           icon: 'fa-solid fa-arrows-spin',   level: 40, years: 1, desc: 'Deployment pipeline concepts' },
+        // ];
         const DEVOPS_SKILLS = [
-            { name: 'Linux',           icon: 'fa-brands fa-linux',        level: 72, years: 2, desc: 'User management, permissions, SSH' },
-            { name: 'VM Deployment',   icon: 'fa-solid fa-cloud',         level: 70, years: 2, desc: 'Cloud platform instance management' },
-            { name: 'Nginx',           icon: 'fa-solid fa-globe',         level: 65, years: 2, desc: 'Web server configuration & reverse proxy' },
-            { name: 'Server Security', icon: 'fa-solid fa-shield-halved', level: 63, years: 2, desc: 'SSH keys, root disable, hardening' },
-            { name: 'Monitoring',      icon: 'fa-solid fa-chart-line',    level: 60, years: 1, desc: 'Prometheus, Grafana, alerting' },
-            { name: 'Networking',      icon: 'fa-solid fa-network-wired', level: 58, years: 2, desc: 'TCP/IP, DNS, firewall rules' },
-            { name: 'Docker',          icon: 'fa-brands fa-docker',       level: 50, years: 1, desc: 'Containerization basics' },
-            { name: 'Kubernetes',      icon: 'fa-solid fa-dharmachakra',  level: 42, years: 1, desc: 'Cloud Native Associate level' },
-            { name: 'CI/CD',           icon: 'fa-solid fa-arrows-spin',   level: 40, years: 1, desc: 'Deployment pipeline concepts' },
+            { name: 'Linux',           icon: 'devicon-linux-plain colored',        level: 72, years: 2, desc: 'User management, permissions, SSH' },
+            { name: 'Openstack',       icon: 'devicon-openstack-plain colored',    level: 70, years: 2, desc: 'Cloud platform instance management' },
+            { name: 'Nginx',           icon: 'devicon-nginx-original colored',     level: 65, years: 2, desc: 'Web server configuration & reverse proxy' },
+            { name: 'Server Security', icon: 'devicon-ssh-original',               level: 63, years: 2, desc: 'SSH keys, root disable, hardening' },
+            { name: 'Monitoring',      icon: 'devicon-prometheus-original',        level: 60, years: 1, desc: 'Prometheus, Grafana, alerting' },
+            { name: 'Networking',      icon: 'devicon-cloudflare-plain colored',   level: 58, years: 2, desc: 'TCP/IP, DNS, firewall rules' },
+            { name: 'Docker',          icon: 'devicon-docker-plain colored',       level: 50, years: 1, desc: 'Containerization basics' },
+            { name: 'Kubernetes',      icon: 'devicon-kubernetes-plain colored',   level: 42, years: 1, desc: 'Cloud Native Associate level' },
+            { name: 'CI/CD',           icon: 'devicon-githubactions-plain colored',level: 40, years: 1, desc: 'Deployment pipeline concepts' },
         ];
-
         // const DEVOPS_SKILLS = [
         //     { name: 'Linux', icon: 'fa-brands fa-linux', desc: 'User management, permissions, SSH' },
         //     { name: 'Nginx', icon: 'fa-solid fa-globe', desc: 'Web server configuration & reverse proxy' },
