@@ -669,7 +669,7 @@
             {
                 id: 'fibo',
                 name: 'Fibo Cloud',
-                icon: 'fa-solid fa-cloud',
+                icon: './img/fibo-min-1.png',
                 role: 'Fulltime DevOps / Systems Engineer',
                 date: 'Jan 2026 – Present',
                 current: true,
@@ -678,7 +678,7 @@
             {
                 id: 'icodice',
                 name: 'Icodice LLC',
-                icon: 'fa-solid fa-building',
+                icon: './img/icodice_logo.png',
                 role: 'Software Development Intern',
                 date: '2023 – 2025',
                 current: false,
@@ -1371,13 +1371,34 @@
                                     >
                                         {/* Icon */}
                                         <div style={{
-                                            width: 34, height: 34, borderRadius: 8, flexShrink: 0,
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            width: 34,
+                                            height: 34,
+                                            borderRadius: 8,
+                                            flexShrink: 0,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
                                             background: activeCompany === co.id ? 'var(--accent)' : 'var(--accent-soft)',
-                                            color: activeCompany === co.id ? 'var(--accent-text)' : 'var(--accent)',
-                                            fontSize: 13, transition: 'all 0.2s',
                                         }}>
-                                            <i className={co.icon}></i>
+                                            {co.icon.includes('img') ? (
+                                                <img
+                                                    src={co.icon}
+                                                    alt={co.name}
+                                                    style={{
+                                                        width: '70%',
+                                                        height: '70%',
+                                                        objectFit: 'contain'
+                                                    }}
+                                                />
+                                            ) : (
+                                                <i
+                                                    className={co.icon}
+                                                    style={{
+                                                        color: activeCompany === co.id ? 'var(--accent-text)' : 'var(--accent)',
+                                                        fontSize: 14
+                                                    }}
+                                                ></i>
+                                            )}
                                         </div>
 
                                         {/* Text */}
