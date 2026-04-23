@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
@@ -1050,7 +1051,7 @@
                                     My hands-on experience spans setting up cloud virtual machines, configuring Nginx web servers, hardening Linux systems, and implementing basic containerization with Docker. I've deployed real projects to production environments with proper HTTPS, SSH key authentication, and firewall configurations.
                                 </p>
                                 <p className="text-base leading-relaxed mb-8" style={{ color: 'var(--text-sec)' }}>
-                                    Beyond infrastructure, I build full-stack applications using React, Node.js, and MongoDB, and I maintain a strong foundation in data structures and algorithmic problem solving with C++ and Python.
+                                    Beyond cloud infrastructure, I build full-stack applications using React, Node.js, and MongoDB, and I maintain a strong foundation in data structures and algorithmic problem solving with C++ and Python.
                                 </p>
 
                                 {/* Goals */}
@@ -1508,6 +1509,11 @@
 
             useScrollReveal();
 
+            // Initialize EmailJS (replace 'YOUR_PUBLIC_KEY' with your actual public key)
+            useEffect(() => {
+                emailjs.init('2VCAKv78eDGoSCi4l');
+            }, []);
+
             const validate = () => {
                 const errs = {};
                 if (!form.name.trim()) errs.name = 'Name is required';
@@ -1525,9 +1531,25 @@
                     showToast('Please fill in all fields correctly', 'error');
                     return;
                 }
-                showToast('Message sent successfully! (demo)');
-                setForm({ name: '', email: '', message: '' });
-                setErrors({});
+                // Send email using EmailJS
+                emailjs.send(
+                'service_hukt7x3',
+                'template_c0zjcdn',
+                {
+                    name: form.name,
+                    email: form.email,
+                    message: form.message,
+                    time: new Date().toLocaleString()
+                })
+                .then(() => {
+                    showToast('Message sent successfully!');
+                    setForm({ name: '', email: '', message: '' });
+                    setErrors({});
+                })
+                .catch((error) => {
+                    console.error('Email send failed:', error);
+                    showToast('Failed to send message. Please try again.', 'error');
+                });
             };
 
             const handleChange = (field) => (e) => {
