@@ -541,6 +541,8 @@
                     'Chemistry & Physics focus',
                     'Computer Science fundamentals',
                     'Graduated after 12 years',
+                    'Best Student of the Year (2022)',
+                    'Top Graduate of the Year (2022)',
                 ],
             },
         ];
@@ -1104,7 +1106,7 @@
         }
         // --- Skills ---
         function Skills() {
-            const [tab, setTab] = useState('dev');
+            const [tab, setTab] = useState('ops');
             useScrollReveal();
 
             return (
@@ -1117,13 +1119,31 @@
 
                         {/* Tabs */}
                         <div className="flex gap-3 mb-10 reveal reveal-delay-1">
-                            <button className={`tab-btn ${tab === 'dev' ? 'active' : ''}`} onClick={() => setTab('dev')}>
-                                <i className="fa-solid fa-code" style={{ marginRight: 6 }}></i> Development
-                            </button>
                             <button className={`tab-btn ${tab === 'ops' ? 'active' : ''}`} onClick={() => setTab('ops')}>
                                 <i className="fa-solid fa-server" style={{ marginRight: 6 }}></i> System / DevOps
                             </button>
+                            <button className={`tab-btn ${tab === 'dev' ? 'active' : ''}`} onClick={() => setTab('dev')}>
+                                <i className="fa-solid fa-code" style={{ marginRight: 6 }}></i> Development
+                            </button>
                         </div>
+                        
+                        {/* DevOps Skills */}
+                        {tab === 'ops' && (
+                            <div className="grid sm:grid-cols-2 gap-3">
+                                {DEVOPS_SKILLS.map((s, i) => (
+                                    <div key={s.name} className="skill-card reveal" style={{ transitionDelay: `${(i % 2) * 0.08}s`, flexDirection: 'column', alignItems: 'flex-start', gap: 10, padding: '20px' }}>
+                                        <div className="flex items-center gap-3 w-full">
+                                            <div className="skill-icon"><i className={s.icon}></i></div>
+                                            <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>{s.name}</p>
+                                        </div>
+                                        <p className="text-xs" style={{ color: 'var(--text-muted)', paddingLeft: 52 }}>{s.desc}</p>
+                                        <div style={{ paddingLeft: 52, width: '100%' }}>
+                                            <SkillBar level={s.level} years={s.years} />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         {/* Dev Skills */}
                         {tab === 'dev' && (
@@ -1142,23 +1162,7 @@
                             </div>
                         )}
 
-                        {/* DevOps Skills */}
-                        {tab === 'ops' && (
-                            <div className="grid sm:grid-cols-2 gap-3">
-                                {DEVOPS_SKILLS.map((s, i) => (
-                                    <div key={s.name} className="skill-card reveal" style={{ transitionDelay: `${(i % 2) * 0.08}s`, flexDirection: 'column', alignItems: 'flex-start', gap: 10, padding: '20px' }}>
-                                        <div className="flex items-center gap-3 w-full">
-                                            <div className="skill-icon"><i className={s.icon}></i></div>
-                                            <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>{s.name}</p>
-                                        </div>
-                                        <p className="text-xs" style={{ color: 'var(--text-muted)', paddingLeft: 52 }}>{s.desc}</p>
-                                        <div style={{ paddingLeft: 52, width: '100%' }}>
-                                            <SkillBar level={s.level} years={s.years} />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        
                     </div>
                 </section>
             );
