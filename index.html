@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otgonbayar Enkhbold | System Engineer</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['DM Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* ===== Theme Variables ===== */
+        :root {
+            --bg: #f2f5f3;
+            --bg-alt: #e8ede9;
+            --card: #ffffff;
+            --card-hover: #f6f9f7;
+            --border: #cdd8d2;
+            --text: #1a2420;
+            --text-sec: #3d5248;
+            --text-muted: #6b8078;
+            --accent: #00b248;
+            --accent-hover: #009e3f;
+            --accent-soft: rgba(0,178,72,0.07);
+            --accent-glow: rgba(0,178,72,0.15);
+            --accent-text: #fff;
+            --terminal-bg: #0a0d0b;
+            --terminal-border: #1a2b22;
+            --terminal-prompt: #00e676;
+            --terminal-text: #b0c0b6;
+            --terminal-output: #e4ebe7;
+            --shadow: 0 4px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 12px 48px rgba(0,0,0,0.08);
+        }
+        .dark {
+            --bg: #090c0a;
+            --bg-alt: #0f1411;
+            --card: #141a17;
+            --card-hover: #1a221e;
+            --border: #1e2e27;
+            --text: #e4ebe7;
+            --text-sec: #a3b5ab;
+            --text-muted: #5e7569;
+            --accent: #00e676;
+            --accent-hover: #69f0ae;
+            --accent-soft: rgba(0,230,118,0.06);
+            --accent-glow: rgba(0,230,118,0.12);
+            --accent-text: #090c0a;
+            --terminal-bg: #060908;
+            --terminal-border: #152018;
+            --terminal-prompt: #00e676;
+            --terminal-text: #7a9488;
+            --terminal-output: #c8d8ce;
+            --shadow: 0 4px 24px rgba(0,0,0,0.3);
+            --shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
+        }
+
+        /* ===== Base ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background-color 0.35s ease, color 0.35s ease;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-alt); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ===== Selection ===== */
+        ::selection { background: var(--accent); color: var(--accent-text); }
+
+        /* ===== Background Grid ===== */
+        .bg-grid {
+            background-image:
+                radial-gradient(circle at 1px 1px, var(--border) 0.5px, transparent 0);
+            background-size: 32px 32px;
+        }
+
+        /* ===== Scroll Progress ===== */
+        .scroll-progress {
+            position: fixed; top: 0; left: 0; height: 2px;
+            background: var(--accent); z-index: 9999;
+            transition: width 0.05s linear;
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* ===== Navbar Glass ===== */
+        .nav-glass {
+            background: color-mix(in srgb, var(--bg) 80%, transparent);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.35s, border-color 0.35s;
+        }
+
+        /* ===== Terminal ===== */
+        .terminal {
+            background: var(--terminal-bg);
+            border: 1px solid var(--terminal-border);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 0 60px var(--accent-glow);
+        }
+        .terminal-bar {
+            background: var(--terminal-border);
+            padding: 10px 14px;
+            display: flex; gap: 7px; align-items: center;
+        }
+        .terminal-dot { width: 11px; height: 11px; border-radius: 50%; }
+        .terminal-body {
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.75;
+            min-height: 220px;
+            color: var(--terminal-text);
+        }
+        .terminal-body .prompt { color: var(--terminal-prompt); }
+        .terminal-body .cmd { color: var(--terminal-text); }
+        .terminal-body .output { color: var(--terminal-output); }
+        .cursor-blink {
+            display: inline-block; width: 8px; height: 16px;
+            background: var(--terminal-prompt);
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom; margin-left: 2px;
+        }
+        /* Scanline overlay */
+        .terminal-scanlines {
+            position: absolute; inset: 0; pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg, transparent, transparent 2px,
+                rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px
+            );
+            border-radius: 10px;
+        }
+
+        /* ===== Keyframes ===== */
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%,100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes pulseRing {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* ===== Reveal on Scroll ===== */
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* ===== Accent Glow ===== */
+        .accent-glow {
+            position: absolute; border-radius: 50%; pointer-events: none;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            filter: blur(50px);
+        }
+
+        /* ===== Card Base ===== */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: background 0.3s, border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: var(--shadow);
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent);
+        }
+
+        /* ===== Skill Card ===== */
+        .skill-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 18px;
+            display: flex; align-items: center; gap: 14px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        .skill-card:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            transform: translateX(4px);
+        }
+        .skill-icon {
+            width: 38px; height: 38px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 16px; flex-shrink: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+        .skill-card:hover .skill-icon {
+            background: var(--accent);
+            color: var(--accent-text);
+        }
+
+        /* ===== Project Card ===== */
+        .project-card {
+            position: relative; overflow: hidden;
+        }
+        .project-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .project-card:hover::before { opacity: 1; }
+
+        /* ===== Timeline ===== */
+        .timeline-line {
+            position: absolute; left: 15px; top: 0; bottom: 0; width: 2px;
+            background: linear-gradient(to bottom, var(--accent), var(--border));
+        }
+        .timeline-dot {
+            position: absolute; left: 8px; top: 6px;
+            width: 16px; height: 16px; border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            z-index: 2; transition: background 0.3s;
+        }
+        .timeline-item:hover .timeline-dot {
+            background: var(--accent);
+        }
+
+        /* ===== Tabs ===== */
+        .tab-btn {
+            padding: 10px 24px; border-radius: 8px; font-weight: 600;
+            font-size: 14px; cursor: pointer; border: 1px solid transparent;
+            background: transparent; color: var(--text-muted);
+            transition: all 0.25s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .tab-btn:hover { color: var(--text); background: var(--accent-soft); }
+        .tab-btn.active {
+            background: var(--accent); color: var(--accent-text);
+            border-color: var(--accent);
+        }
+
+        /* ===== Form Input ===== */
+        .form-input {
+            width: 100%; padding: 14px 16px; border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card); color: var(--text);
+            font-family: 'DM Sans', sans-serif; font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+        .form-input::placeholder { color: var(--text-muted); }
+
+        /* ===== Button ===== */
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px; border-radius: 10px; font-weight: 600;
+            font-size: 15px; border: none; cursor: pointer;
+            background: var(--accent); color: var(--accent-text);
+            transition: all 0.25s ease; font-family: 'DM Sans', sans-serif;
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--accent-glow);
+        }
+        .btn-outline {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px; border-radius: 10px; font-weight: 600;
+            font-size: 15px; cursor: pointer;
+            background: transparent; color: var(--accent);
+            border: 1.5px solid var(--accent);
+            transition: all 0.25s ease; font-family: 'DM Sans', sans-serif;
+        }
+        .btn-outline:hover {
+            background: var(--accent-soft);
+            transform: translateY(-2px);
+        }
+
+        /* ===== Toast ===== */
+        .toast-enter { animation: slideInRight 0.35s ease forwards; }
+        .toast-exit { animation: slideOutRight 0.3s ease forwards; }
+
+        /* ===== Section Title ===== */
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px; font-weight: 500;
+            color: var(--accent); letter-spacing: 0.5px;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .section-title {
+            font-size: clamp(28px, 4vw, 40px); font-weight: 700;
+            color: var(--text); line-height: 1.2;
+        }
+
+        /* ===== Mobile Menu ===== */
+        .mobile-menu-overlay {
+            position: fixed; inset: 0; z-index: 90;
+            background: color-mix(in srgb, var(--bg) 95%, transparent);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 32px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .mobile-menu-overlay.open { opacity: 1; pointer-events: all; }
+        .mobile-menu-overlay a {
+            font-size: 24px; font-weight: 600; color: var(--text);
+            text-decoration: none; transition: color 0.2s;
+        }
+        .mobile-menu-overlay a:hover { color: var(--accent); }
+
+        /* ===== Scroll to Top ===== */
+        .scroll-top-btn {
+            position: fixed; bottom: 28px; right: 28px; z-index: 50;
+            width: 44px; height: 44px; border-radius: 12px;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--accent); font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease; opacity: 0; transform: translateY(10px);
+            pointer-events: none; box-shadow: var(--shadow);
+        }
+        .scroll-top-btn.visible {
+            opacity: 1; transform: translateY(0); pointer-events: all;
+        }
+        .scroll-top-btn:hover {
+            background: var(--accent); color: var(--accent-text);
+            border-color: var(--accent);
+        }
+
+        /* ===== Tag pill ===== */
+        .tag {
+            display: inline-block; padding: 4px 12px; border-radius: 6px;
+            font-size: 12px; font-weight: 500; font-family: 'JetBrains Mono', monospace;
+            background: var(--accent-soft); color: var(--accent);
+            border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+        }
+
+        /* ===== Highlight Card ===== */
+        .highlight-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; text-align: center;
+            transition: all 0.3s ease;
+        }
+        .highlight-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        .highlight-icon {
+            width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 14px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--accent-soft); color: var(--accent); font-size: 20px;
+        }
+
+        /* ===== Reduced motion ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+            .reveal { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback, createContext, useContext } = React;
+
+        /* ===================================================
+           Data
+        =================================================== */
+        const NAV_LINKS = [
+            { id: 'about', label: 'About' },
+            { id: 'skills', label: 'Skills' },
+            { id: 'projects', label: 'Projects' },
+            { id: 'experience', label: 'Experience' },
+            { id: 'contact', label: 'Contact' },
+        ];
+
+        const TERMINAL_LINES = [
+            { type: 'cmd', text: '$ whoami' },
+            { type: 'out', text: 'otgonbayar@enkhbold' },
+            { type: 'cmd', text: '$ cat /etc/role' },
+            { type: 'out', text: 'Information Systems Student | Aspiring System Engineer' },
+            { type: 'cmd', text: '$ cat /etc/location' },
+            { type: 'out', text: 'Ulaanbaatar, Mongolia' },
+            { type: 'cmd', text: '$ echo $STATUS' },
+            { type: 'out', text: 'Building infrastructure. Deploying systems. Learning daily.' },
+        ];
+
+        const HIGHLIGHTS = [
+            { icon: 'fa-graduation-cap', title: '3rd Year Student', desc: 'Information Systems, NUM' },
+            { icon: 'fa-cloud', title: 'Cloud Infrastructure', desc: 'VM deployment & hosting' },
+            { icon: 'fa-server', title: 'Systems & DevOps', desc: 'Nginx, Docker, Linux' },
+            { icon: 'fa-code', title: 'Full-Stack Dev', desc: 'React, Node.js, MongoDB' },
+        ];
+
+        const DEV_SKILLS = [
+            { name: 'HTML', icon: 'fa-brands fa-html5' },
+            { name: 'CSS', icon: 'fa-brands fa-css3-alt' },
+            { name: 'JavaScript', icon: 'fa-brands fa-js' },
+            { name: 'React', icon: 'fa-brands fa-react' },
+            { name: 'Node.js', icon: 'fa-brands fa-node-js' },
+            { name: 'Express.js', icon: 'fa-solid fa-bolt' },
+            { name: 'MongoDB', icon: 'fa-solid fa-database' },
+            { name: 'C++', icon: 'fa-solid fa-microchip' },
+            { name: 'C#', icon: 'fa-solid fa-code' },
+            { name: 'Python', icon: 'fa-brands fa-python' },
+            { name: 'Data Structures', icon: 'fa-solid fa-sitemap' },
+        ];
+
+        const DEVOPS_SKILLS = [
+            { name: 'Linux', icon: 'fa-brands fa-linux', desc: 'User management, permissions, SSH' },
+            { name: 'Nginx', icon: 'fa-solid fa-globe', desc: 'Web server configuration & reverse proxy' },
+            { name: 'Docker', icon: 'fa-brands fa-docker', desc: 'Containerization basics' },
+            { name: 'VM Deployment', icon: 'fa-solid fa-cloud', desc: 'Cloud platform instance management' },
+            { name: 'Networking', icon: 'fa-solid fa-network-wired', desc: 'TCP/IP, DNS, firewall rules' },
+            { name: 'Server Security', icon: 'fa-solid fa-shield-halved', desc: 'SSH keys, root disable, hardening' },
+            { name: 'CI/CD', icon: 'fa-solid fa-arrows-spin', desc: 'Deployment pipeline concepts' },
+            { name: 'Monitoring', icon: 'fa-solid fa-chart-line', desc: 'Service health & troubleshooting' },
+            { name: 'Kubernetes', icon: 'fa-solid fa-dharmachakra', desc: 'Basic orchestration understanding at cloud native associate level' },
+        ];
+
+        const PROJECTS = [
+            {
+                title: 'Cloud-Deployed Portfolio System',
+                stack: ['Nginx', 'Linux VM', 'HTTPS', 'SSH'],
+                desc: 'Deployed a personal portfolio on a cloud VM, configured Nginx as a web server, implemented HTTPS via certificate setup, and secured the server using SSH key authentication and strict firewall rules on ports 22, 80, and 443.',
+                points: ['Public IP hosting with Nginx', 'HTTPS certificate configuration', 'SSH key-based authentication', 'Firewall rules (22, 80, 443)'],
+            },
+            {
+                title: 'Photo Sharing Web Application',
+                stack: ['React', 'Node.js', 'MongoDB', 'Express.js'],
+                desc: 'Migrated a photo sharing platform to MongoDB using Mongoose ODM. Built RESTful APIs for user management and photo data, implementing authentication, commenting, and dynamic data rendering across the full stack.',
+                points: ['User authentication system', 'Comment & interaction features', 'RESTful API with Mongoose', 'Dynamic client-side rendering'],
+            },
+            {
+                title: 'Data Structures Implementation',
+                stack: ['C++', 'BST', 'Heap', 'Red-Black Tree'],
+                desc: 'Implemented core data structures from scratch in C++ with complete functionality including insertion, deletion, traversal, ranking queries, and self-balancing operations with rigorous testing.',
+                points: ['Binary Search Tree operations', 'Min/Max Heap implementation', 'Red-Black Tree balancing', 'Comprehensive test coverage'],
+            },
+        ];
+
+        const EXPERIENCES = [
+            {
+                title: 'Cloud VM Setup & Server Configuration',
+                desc: 'Set up and managed virtual machines on cloud platforms. Configured Nginx web servers, deployed portfolio projects, and established secure remote access protocols.',
+                tags: ['Linux', 'Nginx', 'SSH', 'Cloud Platforms'],
+            },
+            {
+                title: 'Server Security Hardening',
+                desc: 'Implemented comprehensive security measures including disabling root login, configuring SSH key-only authentication, and defining firewall rules to restrict access to essential ports only.',
+                tags: ['SSH Keys', 'Firewall', 'Security', 'Linux Hardening'],
+            },
+            {
+                title: 'Containerization & Infrastructure',
+                desc: 'Gained practical experience with Docker containerization, explored CI/CD deployment pipeline concepts, and worked with OpenStack environments for instance management.',
+                tags: ['Docker', 'CI/CD', 'OpenStack', 'Monitoring'],
+            },
+            {
+                title: 'Full-Stack Application Development',
+                desc: 'Built full-stack web applications using React, Node.js, Express.js, and MongoDB. Developed algorithmic solutions in C++ implementing advanced data structures.',
+                tags: ['React', 'Node.js', 'MongoDB', 'C++'],
+            },
+            {
+                title: 'OpenStack-Based Cloud Infrastructure',
+                desc: 'Provisioned and managed cloud infrastructure using OpenStack, including VM lifecycle management, virtual networking configuration, and storage allocation. Gained hands-on experience with compute (Nova), networking (Neutron), and block storage (Cinder) services.',
+                tags: ['OpenStack', 'Cloud Computing', 'Virtualization', 'Linux'],
+            },
+            {
+                title: 'Ceph-Based Storage Reliability & Monitoring',
+                desc: 'Maintained high-availability Ceph storage clusters by monitoring cluster health, managing OSD nodes, and troubleshooting performance bottlenecks. Implemented monitoring practices to ensure data durability, fault tolerance, and system stability in a distributed environment.',
+                tags: ['Ceph', 'High Availability', 'Fault Tolerance', 'Monitoring', 'Linux'],
+            },
+            {
+                title: 'Infrastructure Monitoring & Visualization',
+                desc: 'Designed and implemented a monitoring stack using Prometheus and Grafana to collect, visualize, and analyze infrastructure metrics. Enabled proactive issue detection and performance tuning through real-time dashboards and system-level insights.',
+                tags: ['Prometheus', 'Grafana', 'Observability', 'Infrastructure', 'Monitoring'],
+            },
+            {
+                title: 'Kubernetes & Cloud Native Fundamentals (Associate Level)',
+                desc: 'Gained hands-on experience with Kubernetes and cloud-native concepts aligned with Cloud Native Associate-level knowledge. Worked with Pods, Deployments, and Services, and understood core principles such as container orchestration, scalability, and microservices architecture.',
+                tags: ['Kubernetes', 'Cloud Native', 'Containers', 'Microservices', 'Orchestration'],
+            },
+            {
+                title: 'Infrastructure Automation using Ansible Playbooks',
+                desc: 'Implemented infrastructure automation using Ansible playbooks to provision and configure systems. Automated tasks such as package installation, service management, and environment setup across multiple hosts using agentless architecture.',
+                tags: ['Ansible', 'Automation', 'Provisioning', 'DevOps', 'Linux'],
+            },
+        ];
+
+        /* ===================================================
+           Theme Context
+        =================================================== */
+        const ThemeCtx = createContext();
+        function ThemeProvider({ children }) {
+            const [dark, setDark] = useState(() => {
+                const saved = localStorage.getItem('theme');
+                return saved ? saved === 'dark' : true;
+            });
+            useEffect(() => {
+                document.documentElement.classList.toggle('dark', dark);
+                localStorage.setItem('theme', dark ? 'dark' : 'light');
+            }, [dark]);
+            return (
+                <ThemeCtx.Provider value={{ dark, toggle: () => setDark(d => !d) }}>
+                    {children}
+                </ThemeCtx.Provider>
+            );
+        }
+        function useTheme() { return useContext(ThemeCtx); }
+
+        /* ===================================================
+           Custom Hooks
+        =================================================== */
+        // Typing effect for terminal
+        function useTypingEffect(lines, speed = 28, linePause = 500) {
+            const [displayed, setDisplayed] = useState([]);
+            useEffect(() => {
+                let lineIdx = 0, charIdx = 0;
+                const linesCopy = [...displayed]; // start fresh only on mount
+                setDisplayed([]);
+                function tick() {
+                    if (lineIdx >= lines.length) return;
+                    const line = lines[lineIdx];
+                    if (charIdx === 0 && line.type === 'cmd') {
+                        setDisplayed(prev => [...prev, { type: 'cmd', text: '' }]);
+                    }
+                    if (charIdx < line.text.length) {
+                        const ch = line.text[charIdx];
+                        const delay = ch === ' ' ? speed * 0.5 : speed;
+                        setTimeout(() => {
+                            setDisplayed(prev => {
+                                const updated = [...prev];
+                                const last = updated[updated.length - 1];
+                                if (last && last.type === line.type && last.text.length < line.text.length) {
+                                    updated[updated.length - 1] = { ...last, text: last.text + ch };
+                                } else {
+                                    updated.push({ type: line.type, text: ch });
+                                }
+                                return updated;
+                            });
+                            charIdx++;
+                            tick();
+                        }, delay);
+                    } else {
+                        charIdx = 0;
+                        lineIdx++;
+                        setTimeout(tick, linePause);
+                    }
+                }
+                const startTimeout = setTimeout(tick, 600);
+                return () => clearTimeout(startTimeout);
+            }, []);
+            return displayed;
+        }
+
+        // Scroll reveal observer
+        function useScrollReveal() {
+            useEffect(() => {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+                document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
+                return () => observer.disconnect();
+            });
+        }
+
+        // Scroll progress
+        function useScrollProgress() {
+            const [progress, setProgress] = useState(0);
+            useEffect(() => {
+                const onScroll = () => {
+                    const h = document.documentElement.scrollHeight - window.innerHeight;
+                    setProgress(h > 0 ? (window.scrollY / h) * 100 : 0);
+                };
+                window.addEventListener('scroll', onScroll, { passive: true });
+                return () => window.removeEventListener('scroll', onScroll);
+            }, []);
+            return progress;
+        }
+
+        // Show scroll-top button
+        function useScrollTop(showAt = 400) {
+            const [show, setShow] = useState(false);
+            useEffect(() => {
+                const onScroll = () => setShow(window.scrollY > showAt);
+                window.addEventListener('scroll', onScroll, { passive: true });
+                return () => window.removeEventListener('scroll', onScroll);
+            }, [showAt]);
+            return show;
+        }
+
+        // Toast state
+        function useToast() {
+            const [toast, setToast] = useState(null);
+            const show = useCallback((msg, type = 'success') => {
+                setToast({ msg, type, id: Date.now() });
+                setTimeout(() => setToast(null), 3500);
+            }, []);
+            return { toast, show };
+        }
+
+        /* ===================================================
+           Components
+        =================================================== */
+
+        // --- Scroll Progress Bar ---
+        function ScrollProgressBar({ progress }) {
+            return <div className="scroll-progress" style={{ width: progress + '%' }} />;
+        }
+
+        // --- Scroll to Top ---
+        function ScrollToTop({ visible }) {
+            const onClick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+            return (
+                <button
+                    className={`scroll-top-btn ${visible ? 'visible' : ''}`}
+                    onClick={onClick}
+                    aria-label="Scroll to top"
+                >
+                    <i className="fa-solid fa-arrow-up"></i>
+                </button>
+            );
+        }
+
+        // --- Toast ---
+        function Toast({ data }) {
+            if (!data) return null;
+            return (
+                <div
+                    className="toast-enter"
+                    style={{
+                        position: 'fixed', top: 90, right: 20, zIndex: 999,
+                        padding: '14px 22px', borderRadius: 10,
+                        background: data.type === 'success' ? 'var(--accent)' : '#ef4444',
+                        color: data.type === 'success' ? 'var(--accent-text)' : '#fff',
+                        fontWeight: 600, fontSize: 14,
+                        boxShadow: '0 8px 30px rgba(0,0,0,0.25)',
+                        fontFamily: "'DM Sans', sans-serif",
+                    }}
+                >
+                    <i className={`fa-solid ${data.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`} style={{ marginRight: 8 }}></i>
+                    {data.msg}
+                </div>
+            );
+        }
+
+        // --- Navbar ---
+        function Navbar() {
+            const { dark, toggle } = useTheme();
+            const [menuOpen, setMenuOpen] = useState(false);
+            const [scrolled, setScrolled] = useState(false);
+
+            useEffect(() => {
+                const onScroll = () => setScrolled(window.scrollY > 20);
+                window.addEventListener('scroll', onScroll, { passive: true });
+                return () => window.removeEventListener('scroll', onScroll);
+            }, []);
+
+            const handleNav = (id) => {
+                setMenuOpen(false);
+                const el = document.getElementById(id);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            return (
+                <header className="nav-glass" style={{
+                    position: 'fixed', top: 0, left: 0, right: 0, zIndex: 80,
+                    boxShadow: scrolled ? 'var(--shadow)' : 'none',
+                }}>
+                    <nav className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+                        {/* Logo */}
+                        <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); }}
+                           className="font-mono font-bold text-lg" style={{ color: 'var(--accent)', textDecoration: 'none' }}>
+                            ~Kouji<span style={{ color: 'var(--text-muted)' }}>$</span>
+                        </a>
+
+                        {/* Desktop Links */}
+                        <div className="hidden md:flex items-center gap-1">
+                            {NAV_LINKS.map(l => (
+                                <button key={l.id} onClick={() => handleNav(l.id)}
+                                    className="px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                                    style={{ color: 'var(--text-sec)', background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif" }}
+                                    onMouseEnter={e => e.target.style.color = 'var(--accent)'}
+                                    onMouseLeave={e => e.target.style.color = 'var(--text-sec)'}
+                                >{l.label}</button>
+                            ))}
+                            <button onClick={toggle}
+                                className="ml-3 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200"
+                                style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: 14 }}
+                                aria-label="Toggle theme"
+                            >
+                                <i className={`fa-solid ${dark ? 'fa-sun' : 'fa-moon'}`}></i>
+                            </button>
+                        </div>
+
+                        {/* Mobile: theme toggle + hamburger */}
+                        <div className="flex md:hidden items-center gap-2">
+                            <button onClick={toggle}
+                                className="w-9 h-9 rounded-lg flex items-center justify-center"
+                                style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: 14 }}
+                                aria-label="Toggle theme"
+                            >
+                                <i className={`fa-solid ${dark ? 'fa-sun' : 'fa-moon'}`}></i>
+                            </button>
+                            <button onClick={() => setMenuOpen(true)}
+                                className="w-9 h-9 rounded-lg flex items-center justify-center"
+                                style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: 16 }}
+                                aria-label="Open menu"
+                            >
+                                <i className="fa-solid fa-bars"></i>
+                            </button>
+                        </div>
+                    </nav>
+
+                    {/* Mobile Menu Overlay */}
+                    <div className={`mobile-menu-overlay ${menuOpen ? 'open' : ''}`}>
+                        <button onClick={() => setMenuOpen(false)}
+                            style={{ position: 'absolute', top: 18, right: 20, background: 'none', border: 'none', color: 'var(--text)', fontSize: 24, cursor: 'pointer' }}
+                            aria-label="Close menu"
+                        >
+                            <i className="fa-solid fa-xmark"></i>
+                        </button>
+                        {NAV_LINKS.map(l => (
+                            <a key={l.id} href={`#${l.id}`} onClick={(e) => { e.preventDefault(); handleNav(l.id); }}>
+                                {l.label}
+                            </a>
+                        ))}
+                    </div>
+                </header>
+            );
+        }
+
+        // --- Hero ---
+        function Hero() {
+            const typed = useTypingEffect(TERMINAL_LINES, 26, 450);
+            const isDone = typed.length >= TERMINAL_LINES.length;
+
+            return (
+                <section className="relative min-h-screen flex items-center pt-16 bg-grid overflow-hidden">
+                    {/* Decorative glows */}
+                    <div className="accent-glow" style={{ width: 500, height: 500, top: '10%', left: '-10%', opacity: 0.5 }} />
+                    <div className="accent-glow" style={{ width: 350, height: 350, bottom: '5%', right: '-5%', opacity: 0.3 }} />
+
+                    <div className="max-w-6xl mx-auto px-5 py-20 w-full">
+                        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                            {/* Terminal */}
+                            <div className="relative reveal" style={{ animation: 'fadeInUp 0.8s ease forwards' }}>
+                                <div className="terminal relative">
+                                    <div className="terminal-scanlines"></div>
+                                    <div className="terminal-bar">
+                                        <div className="terminal-dot" style={{ background: '#ff5f57' }}></div>
+                                        <div className="terminal-dot" style={{ background: '#febc2e' }}></div>
+                                        <div className="terminal-dot" style={{ background: '#28c840' }}></div>
+                                        <span className="ml-3 text-xs font-mono" style={{ color: 'var(--terminal-text)', opacity: 0.5 }}>otgonbayar@server:~</span>
+                                    </div>
+                                    <div className="terminal-body">
+                                        {typed.map((line, i) => (
+                                            <div key={i}>
+                                                {line.type === 'cmd' ? (
+                                                    <><span className="prompt">{'>'}</span> <span className="cmd">{line.text}</span></>
+                                                ) : (
+                                                    <span className="output">{line.text}</span>
+                                                )}
+                                            </div>
+                                        ))}
+                                        {isDone && <span className="cursor-blink"></span>}
+                                    </div>
+                                </div>
+                                {/* Floating decoration */}
+                                <div style={{
+                                    position: 'absolute', top: -12, right: -12, width: 50, height: 50,
+                                    borderRadius: 10, border: '1px dashed var(--accent)', opacity: 0.25,
+                                    animation: 'float 4s ease-in-out infinite',
+                                }}></div>
+                                <div style={{
+                                    position: 'absolute', bottom: -8, left: -8, width: 36, height: 36,
+                                    borderRadius: 8, border: '1px dashed var(--accent)', opacity: 0.2,
+                                    animation: 'float 5s ease-in-out infinite 1s',
+                                }}></div>
+                            </div>
+
+                            {/* Info */}
+                            <div>
+                                <p className="font-mono text-sm mb-4" style={{ color: 'var(--accent)', animation: 'fadeInUp 0.8s ease 0.2s both' }}>
+                                    <i className="fa-solid fa-terminal" style={{ marginRight: 6 }}></i> Hello, World
+                                </p>
+                                <h1 className="font-bold leading-tight mb-4"
+                                    style={{ fontSize: 'clamp(32px, 5vw, 52px)', color: 'var(--text)', animation: 'fadeInUp 0.8s ease 0.3s both' }}>
+                                    Otgonbayar<br/>
+                                    <span style={{ color: 'var(--accent)' }}>Enkhbold</span>
+                                </h1>
+                                <p className="text-lg mb-3" style={{ color: 'var(--text-sec)', animation: 'fadeInUp 0.8s ease 0.4s both' }}>
+                                    Information Systems Student / Aspiring System Engineer
+                                </p>
+                                <p className="flex items-center gap-2 text-sm mb-8" style={{ color: 'var(--text-muted)', animation: 'fadeInUp 0.8s ease 0.45s both' }}>
+                                    <i className="fa-solid fa-location-dot"></i> Ulaanbaatar, Mongolia
+                                </p>
+                                <div className="flex flex-wrap gap-4" style={{ animation: 'fadeInUp 0.8s ease 0.5s both' }}>
+                                    <button className="btn-primary" onClick={() => document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
+                                        <i className="fa-solid fa-rocket"></i> View Projects
+                                    </button>
+                                    <button className="btn-outline" onClick={() => document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
+                                        <i className="fa-solid fa-envelope"></i> Get in Touch
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Scroll indicator */}
+                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2" style={{ animation: 'float 2.5s ease-in-out infinite' }}>
+                            <i className="fa-solid fa-chevron-down text-sm" style={{ color: 'var(--text-muted)' }}></i>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // --- About ---
+        function About() {
+            return (
+                <section id="about" className="py-24 relative">
+                    <div className="max-w-6xl mx-auto px-5">
+                        <div className="reveal">
+                            <p className="section-label">// About Me</p>
+                            <h2 className="section-title mb-6">Building the infrastructure<br/>that powers the web.</h2>
+                        </div>
+
+                        <div className="grid lg:grid-cols-5 gap-10">
+                            {/* Bio text */}
+                            <div className="lg:col-span-3 reveal reveal-delay-1">
+                                <p className="text-base leading-relaxed mb-5" style={{ color: 'var(--text-sec)' }}>
+                                    I'm a third-year Information Systems student with a deep focus on what happens beneath the application layer — the servers, the configurations, the security rules that keep systems running reliably.
+                                </p>
+                                <p className="text-base leading-relaxed mb-5" style={{ color: 'var(--text-sec)' }}>
+                                    My hands-on experience spans setting up cloud virtual machines, configuring Nginx web servers, hardening Linux systems, and implementing basic containerization with Docker. I've deployed real projects to production environments with proper HTTPS, SSH key authentication, and firewall configurations.
+                                </p>
+                                <p className="text-base leading-relaxed mb-8" style={{ color: 'var(--text-sec)' }}>
+                                    Beyond infrastructure, I build full-stack applications using React, Node.js, and MongoDB, and I maintain a strong foundation in data structures and algorithmic problem solving with C++ and Python.
+                                </p>
+
+                                {/* Goals */}
+                                <div style={{ padding: '18px 22px', borderRadius: 10, background: 'var(--accent-soft)', borderLeft: '3px solid var(--accent)' }}>
+                                    <p className="font-mono text-xs mb-2" style={{ color: 'var(--accent)' }}>GOALS</p>
+                                    <p className="text-sm" style={{ color: 'var(--text-sec)' }}>
+                                        Become a system engineer / cloud engineer. Build scalable and secure infrastructure. Deepen knowledge in distributed systems and cloud-native architectures.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Highlight cards */}
+                            <div className="lg:col-span-2 grid grid-cols-2 gap-4">
+                                {HIGHLIGHTS.map((h, i) => (
+                                    <div key={i} className={`highlight-card reveal reveal-delay-${i + 1}`}>
+                                        <div className="highlight-icon">
+                                            <i className={`fa-solid ${h.icon}`}></i>
+                                        </div>
+                                        <p className="font-semibold text-sm mb-1" style={{ color: 'var(--text)' }}>{h.title}</p>
+                                        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{h.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // --- Skills ---
+        function Skills() {
+            const [tab, setTab] = useState('dev');
+            useScrollReveal();
+
+            return (
+                <section id="skills" className="py-24 relative" style={{ background: 'var(--bg-alt)', transition: 'background 0.35s' }}>
+                    <div className="max-w-6xl mx-auto px-5">
+                        <div className="reveal">
+                            <p className="section-label">// Skills</p>
+                            <h2 className="section-title mb-8">Technical toolkit.</h2>
+                        </div>
+
+                        {/* Tabs */}
+                        <div className="flex gap-3 mb-10 reveal reveal-delay-1">
+                            <button className={`tab-btn ${tab === 'dev' ? 'active' : ''}`} onClick={() => setTab('dev')}>
+                                <i className="fa-solid fa-code" style={{ marginRight: 6 }}></i> Development
+                            </button>
+                            <button className={`tab-btn ${tab === 'ops' ? 'active' : ''}`} onClick={() => setTab('ops')}>
+                                <i className="fa-solid fa-server" style={{ marginRight: 6 }}></i> System / DevOps
+                            </button>
+                        </div>
+
+                        {/* Dev Skills Grid */}
+                        {tab === 'dev' && (
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                {DEV_SKILLS.map((s, i) => (
+                                    <div key={s.name} className="skill-card reveal reveal-delay-(Math.min(i%3+1, 4))" style={{ transitionDelay: `${(i % 3) * 0.06}s` }}>
+                                        <div className="skill-icon"><i className={s.icon}></i></div>
+                                        <div>
+                                            <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>{s.name}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* DevOps Skills Grid */}
+                        {tab === 'ops' && (
+                            <div className="grid sm:grid-cols-2 gap-3">
+                                {DEVOPS_SKILLS.map((s, i) => (
+                                    <div key={s.name} className="skill-card reveal" style={{ transitionDelay: `${(i % 2) * 0.08}s`, flexDirection: 'column', alignItems: 'flex-start', gap: 10, padding: '20px' }}>
+                                        <div className="flex items-center gap-3 w-full">
+                                            <div className="skill-icon"><i className={s.icon}></i></div>
+                                            <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>{s.name}</p>
+                                        </div>
+                                        <p className="text-xs pl-[52px]" style={{ color: 'var(--text-muted)' }}>{s.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </section>
+            );
+        }
+
+        // --- Projects ---
+        function Projects() {
+            useScrollReveal();
+            return (
+                <section id="projects" className="py-24 relative">
+                    <div className="max-w-6xl mx-auto px-5">
+                        <div className="reveal">
+                            <p className="section-label">// Projects</p>
+                            <h2 className="section-title mb-10">What I've built.</h2>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {PROJECTS.map((p, i) => (
+                                <div key={i} className={`card project-card p-6 reveal reveal-delay-${Math.min(i + 1, 3)}`}>
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                        {p.stack.map(t => <span key={t} className="tag">{t}</span>)}
+                                    </div>
+                                    <h3 className="font-bold text-lg mb-3" style={{ color: 'var(--text)' }}>{p.title}</h3>
+                                    <p className="text-sm mb-5 leading-relaxed" style={{ color: 'var(--text-sec)' }}>{p.desc}</p>
+                                    <ul className="space-y-2">
+                                        {p.points.map((pt, j) => (
+                                            <li key={j} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+                                                <i className="fa-solid fa-check mt-0.5" style={{ color: 'var(--accent)', fontSize: 10 }}></i>
+                                                {pt}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // --- Experience ---
+        function Experience() {
+            useScrollReveal();
+            return (
+                <section id="experience" className="py-24 relative" style={{ background: 'var(--bg-alt)', transition: 'background 0.35s' }}>
+                    <div className="max-w-6xl mx-auto px-5">
+                        <div className="reveal">
+                            <p className="section-label">// Experience</p>
+                            <h2 className="section-title mb-10">System engineering work.</h2>
+                        </div>
+
+                        <div className="relative max-w-2xl" style={{ paddingLeft: 42 }}>
+                            {/* Vertical line */}
+                            <div className="timeline-line"></div>
+
+                            {EXPERIENCES.map((exp, i) => (
+                                <div key={i} className="timeline-item relative mb-12 last:mb-0 reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
+                                    <div className="timeline-dot"></div>
+                                    <div className="card p-5" style={{ marginLeft: 12 }}>
+                                        <h3 className="font-bold text-base mb-2" style={{ color: 'var(--text)' }}>{exp.title}</h3>
+                                        <p className="text-sm mb-4 leading-relaxed" style={{ color: 'var(--text-sec)' }}>{exp.desc}</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {exp.tags.map(t => <span key={t} className="tag">{t}</span>)}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // --- Contact ---
+        function Contact() {
+            const { toast, show: showToast } = useToast();
+            const [form, setForm] = useState({ name: '', email: '', message: '' });
+            const [errors, setErrors] = useState({});
+
+            useScrollReveal();
+
+            const validate = () => {
+                const errs = {};
+                if (!form.name.trim()) errs.name = 'Name is required';
+                if (!form.email.trim()) errs.email = 'Email is required';
+                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Invalid email format';
+                if (!form.message.trim()) errs.message = 'Message is required';
+                return errs;
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                const errs = validate();
+                setErrors(errs);
+                if (Object.keys(errs).length > 0) {
+                    showToast('Please fill in all fields correctly', 'error');
+                    return;
+                }
+                showToast('Message sent successfully! (demo)');
+                setForm({ name: '', email: '', message: '' });
+                setErrors({});
+            };
+
+            const handleChange = (field) => (e) => {
+                setForm(prev => ({ ...prev, [field]: e.target.value }));
+                if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }));
+            };
+
+            const socialLinks = [
+                { icon: 'fa-brands fa-github', label: 'GitHub', href: '#' },
+                { icon: 'fa-brands fa-linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/otgonbayar-enkhbold-134222269/' },
+                { icon: 'fa-solid fa-envelope', label: 'Email', href: 'mailto:ogoo0624@gmail.com' },
+            ];
+
+            return (
+                <section id="contact" className="py-24 relative">
+                    <div className="max-w-6xl mx-auto px-5">
+                        <div className="reveal">
+                            <p className="section-label">// Contact</p>
+                            <h2 className="section-title mb-4">Let's connect.</h2>
+                            <p className="text-base mb-10" style={{ color: 'var(--text-sec)', maxWidth: 520 }}>
+                                Interested in system engineering, infrastructure projects, or just want to say hello? I'm always open to conversations and opportunities.
+                            </p>
+                        </div>
+
+                        <div className="grid md:grid-cols-5 gap-10">
+                            {/* Form */}
+                            <form onSubmit={handleSubmit} className="md:col-span-3 space-y-5 reveal reveal-delay-1" noValidate>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>Name</label>
+                                    <input type="text" className="form-input" placeholder="Your name" value={form.name} onChange={handleChange('name')} />
+                                    {errors.name && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.name}</p>}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>Email</label>
+                                    <input type="email" className="form-input" placeholder="you@example.com" value={form.email} onChange={handleChange('email')} />
+                                    {errors.email && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.email}</p>}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>Message</label>
+                                    <textarea className="form-input" rows="5" placeholder="Write your message..." value={form.message} onChange={handleChange('message')} style={{ resize: 'vertical' }}></textarea>
+                                    {errors.message && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.message}</p>}
+                                </div>
+                                <button type="submit" className="btn-primary">
+                                    <i className="fa-solid fa-paper-plane"></i> Send Message
+                                </button>
+                            </form>
+
+                            {/* Social */}
+                            <div className="md:col-span-2 reveal reveal-delay-2">
+                                <div className="card p-6 space-y-5">
+                                    <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>Find me online</p>
+                                    {socialLinks.map(link => (
+                                        <a key={link.label} href={link.href}
+                                            className="flex items-center gap-4 p-3 rounded-lg transition-all duration-200 group"
+                                            style={{ color: 'var(--text-sec)', textDecoration: 'none' }}
+                                            onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-soft)'; e.currentTarget.style.color = 'var(--accent)'; }}
+                                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-sec)'; }}
+                                        >
+                                            <div className="skill-icon" style={{ width: 36, height: 36, fontSize: 15 }}>
+                                                <i className={link.icon}></i>
+                                            </div>
+                                            <span className="text-sm font-medium">{link.label}</span>
+                                            <i className="fa-solid fa-arrow-right text-xs ml-auto opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--accent)' }}></i>
+                                        </a>
+                                    ))}
+
+                                    <div style={{ marginTop: 20, paddingTop: 20, borderTop: '1px solid var(--border)' }}>
+                                        <p className="font-mono text-xs mb-2" style={{ color: 'var(--text-muted)' }}>EDUCATION</p>
+                                        <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>Bachelor's in Information Systems</p>
+                                        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>3rd Year &mdash; National University of Mongolia</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <Toast data={toast} />
+                </section>
+            );
+        }
+
+        // --- Footer ---
+        function Footer() {
+            return (
+                <footer style={{ borderTop: '1px solid var(--border)', background: 'var(--bg-alt)', transition: 'background 0.35s, border-color 0.35s' }}>
+                    <div className="max-w-6xl mx-auto px-5 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <p className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
+                            &copy; {new Date().getFullYear()} Otgonbayar Enkhbold
+                        </p>
+                        <p className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
+                            Designed & built with <span style={{ color: 'var(--accent)' }}>&lt;dev /&gt;</span>
+                        </p>
+                    </div>
+                </footer>
+            );
+        }
+
+        /* ===================================================
+           App Root
+        =================================================== */
+        function App() {
+            const progress = useScrollProgress();
+            const showTop = useScrollTop(400);
+            useScrollReveal();
+
+            return (
+                <ThemeProvider>
+                    <ScrollProgressBar progress={progress} />
+                    <ScrollToTop visible={showTop} />
+                    <Navbar />
+                    <main>
+                        <Hero />
+                        <About />
+                        <Skills />
+                        <Projects />
+                        <Experience />
+                        <Contact />
+                    </main>
+                    <Footer />
+                </ThemeProvider>
+            );
+        }
+
+        /* ===================================================
+           Mount
+        =================================================== */
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>in
