@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css"/>
     <script>
         tailwind.config = {
             theme: {
@@ -417,7 +418,7 @@
         const NAV_LINKS = [
             { id: 'about', label: 'About' },
             { id: 'skills', label: 'Skills' },
-            { id: 'projects', label: 'Projects' },
+            { id: 'education', label: 'Education' },
             { id: 'experience', label: 'Experience' },
             { id: 'contact', label: 'Contact' },
         ];
@@ -478,25 +479,44 @@
         //     { name: 'Kubernetes', icon: 'fa-solid fa-dharmachakra', desc: 'Basic orchestration understanding at cloud native associate level' },
         // ];
 
-        const PROJECTS = [
+        const EDUCATION = [
             {
-                title: 'Cloud-Deployed Portfolio System',
-                stack: ['Nginx', 'Linux VM', 'HTTPS', 'SSH'],
-                desc: 'Deployed a personal portfolio on a cloud VM, configured Nginx as a web server, implemented HTTPS via certificate setup, and secured the server using SSH key authentication and strict firewall rules on ports 22, 80, and 443.',
-                points: ['Public IP hosting with Nginx', 'HTTPS certificate configuration', 'SSH key-based authentication', 'Firewall rules (22, 80, 443)'],
+                school: 'National University of Mongolia',
+                short: 'NUM',
+                icon: 'fa-solid fa-graduation-cap',
+                degree: 'Bachelor\'s in Information Systems Engineering',
+                field: 'Faculty of Information Technology',
+                date: '2022 – Present',
+                current: true,
+                gpa: null,
+                highlights: [
+                    'Data Structures & Algorithms (C++)',
+                    'Database Systems & SQL',
+                    'Computer Networks & Security',
+                    'Software Engineering & OOP',
+                ],
             },
             {
-                title: 'Photo Sharing Web Application',
-                stack: ['React', 'Node.js', 'MongoDB', 'Express.js'],
-                desc: 'Migrated a photo sharing platform to MongoDB using Mongoose ODM. Built RESTful APIs for user management and photo data, implementing authentication, commenting, and dynamic data rendering across the full stack.',
-                points: ['User authentication system', 'Comment & interaction features', 'RESTful API with Mongoose', 'Dynamic client-side rendering'],
+                school: '51st School of Mongolia',
+                short: '51st',
+                icon: 'fa-solid fa-school',
+                degree: 'High School Diploma',
+                field: 'General Secondary Education',
+                date: '2010 – 2022',
+                current: false,
+                gpa: null,
+                highlights: [
+                    'Chemistry & Physics focus',
+                    'Computer Science fundamentals',
+                    'Graduated after 12 years',
+                ],
             },
-            {
-                title: 'Data Structures Implementation',
-                stack: ['C++', 'BST', 'Heap', 'Red-Black Tree'],
-                desc: 'Implemented core data structures from scratch in C++ with complete functionality including insertion, deletion, traversal, ranking queries, and self-balancing operations with rigorous testing.',
-                points: ['Binary Search Tree operations', 'Min/Max Heap implementation', 'Red-Black Tree balancing', 'Comprehensive test coverage'],
-            },
+        ];
+
+        const LANGUAGES = [
+            { name: 'Mongolian', code: 'mn', level: 'Native',            proficiency: 100, cert: null },
+            { name: 'English',   code: 'gb', level: 'C1 — Advanced',     proficiency: 82,  cert: 'CEFR C1' },
+            { name: 'Japanese',  code: 'jp', level: 'N3 — Intermediate', proficiency: 55,  cert: 'JLPT N3' },
         ];
 
        const EXPERIENCES = [
@@ -957,8 +977,8 @@
                                     <i className="fa-solid fa-location-dot"></i> Ulaanbaatar, Mongolia
                                 </p>
                                 <div className="flex flex-wrap gap-4" style={{ animation: 'fadeInUp 0.8s ease 0.5s both' }}>
-                                    <button className="btn-primary" onClick={() => document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
-                                        <i className="fa-solid fa-rocket"></i> View Projects
+                                    <button className="btn-primary" onClick={() => document.getElementById('education')?.scrollIntoView({behavior:'smooth'})}>
+                                        <i className="fa-solid fa-rocket"></i> Education & Languages
                                     </button>
                                     <button className="btn-outline" onClick={() => document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
                                         <i className="fa-solid fa-envelope"></i> Get in Touch
@@ -1111,35 +1131,151 @@
                 </section>
             );
         }
-        // --- Projects ---
-        function Projects() {
+        // --- Education ---
+        function Education() {
             useScrollReveal();
+
             return (
-                <section id="projects" className="py-24 relative">
+                <section id="education" className="py-24 relative">
                     <div className="max-w-6xl mx-auto px-5">
                         <div className="reveal">
-                            <p className="section-label">// Projects</p>
-                            <h2 className="section-title mb-10">What I've built.</h2>
+                            <p className="section-label">// Education & Languages</p>
+                            <h2 className="section-title mb-10">Where I learned.</h2>
                         </div>
 
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {PROJECTS.map((p, i) => (
-                                <div key={i} className={`card project-card p-6 reveal reveal-delay-${Math.min(i + 1, 3)}`}>
-                                    <div className="flex flex-wrap gap-2 mb-4">
-                                        {p.stack.map(t => <span key={t} className="tag">{t}</span>)}
+                        <div className="grid lg:grid-cols-5 gap-8">
+
+                            {/* ── Left: Education ── */}
+                            <div className="lg:col-span-3 flex flex-col gap-5">
+                                {EDUCATION.map((edu, i) => (
+                                    <div key={i} className={`card p-6 reveal reveal-delay-${i + 1}`} style={{ position: 'relative', overflow: 'hidden' }}>
+                                        {/* Top accent */}
+                                        <div style={{
+                                            position: 'absolute', top: 0, left: 0, right: 0, height: 3,
+                                            background: 'linear-gradient(90deg, var(--accent), transparent)',
+                                        }}></div>
+
+                                        {/* Header */}
+                                        <div className="flex items-start gap-4 mb-4">
+                                            <div style={{
+                                                width: 46, height: 46, borderRadius: 10, flexShrink: 0,
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                background: 'var(--accent-soft)', color: 'var(--accent)', fontSize: 18,
+                                            }}>
+                                                <i className={edu.icon}></i>
+                                            </div>
+                                            <div style={{ flex: 1 }}>
+                                                <div className="flex items-center gap-2 flex-wrap mb-1">
+                                                    <h3 className="font-bold text-base" style={{ color: 'var(--text)', lineHeight: 1.2 }}>
+                                                        {edu.school}
+                                                    </h3>
+                                                    {edu.current && (
+                                                        <span style={{
+                                                            padding: '2px 8px', borderRadius: 5, fontSize: 10, fontWeight: 600,
+                                                            background: 'var(--accent)', color: 'var(--accent-text)',
+                                                            fontFamily: "'JetBrains Mono', monospace",
+                                                        }}>CURRENT</span>
+                                                    )}
+                                                </div>
+                                                <p className="text-sm font-semibold mb-1" style={{ color: 'var(--accent)' }}>{edu.degree}</p>
+                                                <div className="flex items-center gap-3 flex-wrap">
+                                                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{edu.field}</p>
+                                                    <span style={{ color: 'var(--border)' }}>·</span>
+                                                    <p className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>{edu.date}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Highlights */}
+                                        <div style={{
+                                            paddingTop: 14, borderTop: '1px solid var(--border)',
+                                            display: 'flex', flexWrap: 'wrap', gap: 6,
+                                        }}>
+                                            {edu.highlights.map((h, j) => (
+                                                <span key={j} className="tag">{h}</span>
+                                            ))}
+                                        </div>
                                     </div>
-                                    <h3 className="font-bold text-lg mb-3" style={{ color: 'var(--text)' }}>{p.title}</h3>
-                                    <p className="text-sm mb-5 leading-relaxed" style={{ color: 'var(--text-sec)' }}>{p.desc}</p>
-                                    <ul className="space-y-2">
-                                        {p.points.map((pt, j) => (
-                                            <li key={j} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                                                <i className="fa-solid fa-check mt-0.5" style={{ color: 'var(--accent)', fontSize: 10 }}></i>
-                                                {pt}
-                                            </li>
-                                        ))}
-                                    </ul>
+                                ))}
+                            </div>
+
+                            {/* ── Right: Languages ── */}
+                            <div className="lg:col-span-2 reveal reveal-delay-2">
+                                <div className="card p-6" style={{ height: '100%' }}>
+                                    <p className="font-mono text-xs mb-6" style={{
+                                        color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px',
+                                    }}>Language Proficiency</p>
+
+                                    <div className="flex flex-col gap-6">
+                                        {LANGUAGES.map((lang, i) => {
+                                            const color = lang.proficiency === 100 ? '#00e676'
+                                                : lang.proficiency >= 75 ? '#00e676'
+                                                : lang.proficiency >= 55 ? '#00c864'
+                                                : '#00a050';
+                                            return (
+                                                <div key={i}>
+                                                    {/* Lang header */}
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <div className="flex items-center gap-3">
+                                                            <span
+                                                                className={`fi fi-${lang.code}`}
+                                                                style={{
+                                                                    width: 28, height: 20, borderRadius: 4,
+                                                                    flexShrink: 0, fontSize: 20,
+                                                                    boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
+                                                                }}
+                                                            ></span>
+                                                            <div>
+                                                                <p className="font-semibold text-sm" style={{ color: 'var(--text)', lineHeight: 1.1 }}>{lang.name}</p>
+                                                                <p className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>{lang.level}</p>
+                                                            </div>
+                                                        </div>
+                                                        {lang.cert && (
+                                                            <span style={{
+                                                                padding: '3px 9px', borderRadius: 6, fontSize: 10, fontWeight: 600,
+                                                                background: 'var(--accent-soft)', color: 'var(--accent)',
+                                                                border: '1px solid color-mix(in srgb, var(--accent) 20%, transparent)',
+                                                                fontFamily: "'JetBrains Mono', monospace",
+                                                            }}>{lang.cert}</span>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Progress bar */}
+                                                    <div style={{
+                                                        height: 5, borderRadius: 3,
+                                                        background: 'var(--border)', overflow: 'hidden',
+                                                    }}>
+                                                        <div style={{
+                                                            height: '100%',
+                                                            width: lang.proficiency + '%',
+                                                            borderRadius: 3,
+                                                            background: color,
+                                                            transition: 'width 0.7s cubic-bezier(0.22,1,0.36,1)',
+                                                        }}></div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+
+                                    {/* Divider + note */}
+                                    <div style={{ marginTop: 32, paddingTop: 20, borderTop: '1px solid var(--border)' }}>
+                                        <p className="font-mono text-xs mb-3" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                            Certifications
+                                        </p>
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex items-center gap-2">
+                                                <i className="fa-solid fa-certificate" style={{ color: 'var(--accent)', fontSize: 12 }}></i>
+                                                <p className="text-xs" style={{ color: 'var(--text-sec)' }}>JLPT N3 — Japanese Language Proficiency</p>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <i className="fa-solid fa-certificate" style={{ color: 'var(--accent)', fontSize: 12 }}></i>
+                                                <p className="text-xs" style={{ color: 'var(--text-sec)' }}>CEFR C1 — English Advanced Level</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            ))}
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -1448,7 +1584,7 @@
                         <Hero />
                         <About />
                         <Skills />
-                        <Projects />
+                        <Education />
                         <Experience />
                         <Contact />
                     </main>
